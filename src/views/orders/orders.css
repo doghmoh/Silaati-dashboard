@@ -1,0 +1,17 @@
+/* Orders.css */
+
+.status {
+    color: white;
+}
+
+.status.cancelled {
+    background-color: red;
+}
+
+.status.completed {
+    background-color: green;
+}
+
+.status.processing {
+    background-color: orange;
+}
