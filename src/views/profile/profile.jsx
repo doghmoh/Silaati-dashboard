@@ -3,16 +3,16 @@ import { Card, Container, Row, Col, Button, CardGroup } from 'react-bootstrap';
 import { useLocation, useNavigate } from 'react-router-dom';
 import avatar1 from '../../assets/images/user/avatar-2.jpg';
 import './profile.css';
-import { handleUpdateUserImage, handleUpdateUserStatus, hanldeGetAllOrdersByUser, hanldeGetPrdouctsBySupplier, hanldeGetUserDetails } from 'apis/users';
+import { handleUpdateUserImage, handleUpdateUserStatus, hanldeGetAllOrdersByUser, hanldeGetPrdouctsBySupplier, hanldeGetUserDetails, handleDeleteUser } from 'apis/users';
 import ProductsList from './productsTable';
 import OrdersList from './ordersTable';
 import Loader from 'components/Loader/Loader';
-import OrderDetailsModal from 'components/Modal/OrderDetailsModal';
+import ConfirmationModal from 'components/Modal/ConfirmOperation';
 
 const Profile = () => {
     const location = useLocation();
     const { item } = location.state;
-    const navigate = useNavigate()
+    const navigate = useNavigate();
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState('');
     const [products, setProducts] = useState([]);
@@ -23,20 +23,17 @@ const Profile = () => {
     const [currentPageOrders, setCurrentPageOrders] = useState(1);
     const [itemsPerPageOrders, setItemsPerPageOrders] = useState(5);
     const [imageBase64, setImageBase64] = useState('');
-
-
     const [showModal, setShowModal] = useState(false);
-    const [selectedOrder, setSelectedOrder] = useState(null);
-
-
-
+    const [modalMessage, setModalMessage] = useState('');
+    const [confirmAction, setConfirmAction] = useState(null);
 
     const clearState = () => {
-        setProducts([])
-        setOrders([])
-        setUserdata([])
-        setError('')
-    }
+        setProducts([]);
+        setOrders([]);
+        setUserdata([]);
+        setError('');
+    };
+
     const fetchProfileData = async () => {
         setLoading(true);
         setError('');
@@ -69,9 +66,8 @@ const Profile = () => {
         }
     };
 
-
     useEffect(() => {
-        clearState()
+        clearState();
         fetchProfileData();
     }, [item._id]);
 
@@ -111,46 +107,49 @@ const Profile = () => {
             console.log('Action cancelled');
     };
 
-
     const handleDeleteUser = async () => {
-
-        if (window.confirm('Are you sure you want to perform this action?')) {
+        setModalMessage('Are you sure you want to delete this user?');
+        setConfirmAction(() => async () => {
             setLoading(true);
             try {
                 await handleDeleteUser(item._id);
-                navigate('/supplier')
+                navigate('/supplier');
             } catch (error) {
-                setError('Failed to update user status');
+                setError('Failed to delete user');
             } finally {
                 setLoading(false);
+                handleCloseModal();
             }
-        }
-        else
-            console.log('Action cancelled');
-
+        });
+        setShowModal(true);
     };
 
-    const handleDeletImage = async () => {
-        if (window.confirm('Are you sure you want to perform this action?')) {
-
+    const handleDeleteImage = async () => {
+        setModalMessage('Are you sure you want to delete this image?');
+        setConfirmAction(() => async () => {
             setLoading(true);
             try {
                 await handleUpdateUserImage(item._id, item.phoneNumber);
-                fetchProfileData()
+                fetchProfileData();
             } catch (error) {
-                setError('Failed to update user status');
+                setError('Failed to delete image');
             } finally {
                 setLoading(false);
+                handleCloseModal();
             }
-            console.log('Action confirmed and performed');
-        } else {
-            console.log('Action cancelled');
-        }
-    }
+        });
+        setShowModal(true);
+    };
+
+    const handleCloseModal = () => {
+        setShowModal(false);
+        setModalMessage('');
+        setConfirmAction(null);
+    };
 
     if (!item) return <p>Loading...</p>;
 
-    if (loading && userdata.length === 0 && orders.length === 0 && products.length === 0) return <Loader />
+    if (loading && userdata.length === 0 && orders.length === 0 && products.length === 0) return <Loader />;
 
     return (
         <React.Fragment>
@@ -158,7 +157,7 @@ const Profile = () => {
                 <Card className="">
                     <Card.Header className="theme-bg ProfileCardBackgroundImage" variant="top" />
                     <CardGroup>
-                        <Button onClick={handleDeletImage} className='deleteimg '> <i className="feather icon-trash" /></Button>
+                        <Button onClick={handleDeleteImage} className='deleteimg '> <i className="feather icon-trash" /></Button>
                         <Card.Img className="ProfileCardImage" alt="User Image" src={item.src || avatar1} />
                     </CardGroup>
                     <Card.Body className="text-center ProfileCardBody">
@@ -182,7 +181,7 @@ const Profile = () => {
                         <Col>
                             <Button
                                 variant={'danger'}
-                                onClick={() => handleDeleteUser()}
+                                onClick={handleDeleteUser}
                             >
                                 Delete
                             </Button>
@@ -265,7 +264,12 @@ const Profile = () => {
                     />
                 </Col>
             </Row>
-
+            <ConfirmationModal
+                show={showModal}
+                handleClose={handleCloseModal}
+                handleConfirm={confirmAction}
+                message={modalMessage}
+            />
         </React.Fragment>
     );
 };
