@@ -60,6 +60,13 @@ const menuItems = {
           type: 'item',
           icon: 'feather icon-box',
           url: '/products'
+        },
+        {
+          id: 'component',
+          title: 'Advertisment',
+          type: 'item',
+          icon: 'feather icon-box',
+          url: '/ads'
         }
       ]
     },

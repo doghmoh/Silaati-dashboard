@@ -1,7 +1,7 @@
 import React, { useEffect } from 'react';
 import * as d3 from 'd3';
 
-const PieDonutChart = ({ data }) => {
+const PieDonutChart2 = ({ data }) => {
   useEffect(() => {
     const width = 500;
     const height = 300;
@@ -9,10 +9,10 @@ const PieDonutChart = ({ data }) => {
     const innerRadius = radius * 0.6;
 
     // Clear the previous SVG and legend
-    d3.select('#donut-chart').selectAll('*').remove();
+    d3.select('#donut-chart2').selectAll('*').remove();
 
     const svg = d3
-      .select('#donut-chart')
+      .select('#donut-chart2')
       .append('svg')
       .attr('width', width)
       .attr('height', height)
@@ -44,7 +44,7 @@ const PieDonutChart = ({ data }) => {
 
     // Create legend below the chart
     const legend = d3
-      .select('#donut-chart')
+      .select('#donut-chart2')
       .append('div')
       .attr('class', 'legend')
       .style('display', 'flex')
@@ -74,7 +74,7 @@ const PieDonutChart = ({ data }) => {
 
   }, [data]);
 
-  return <div id="donut-chart" className='d-flex flex-column justify-content-center align-items-center'></div>;
+  return <div id="donut-chart2" className='d-flex flex-column justify-content-center align-items-center'></div>;
 };
 
-export default PieDonutChart;
+export default PieDonutChart2;

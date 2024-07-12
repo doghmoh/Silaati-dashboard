@@ -1,16 +1,17 @@
 import React, { useState, useEffect } from 'react';
-import { Card, Container, Row, Col, Form, Pagination } from 'react-bootstrap';
-import { useLocation } from 'react-router-dom';
+import { Card, Container, Row, Col, Button } from 'react-bootstrap';
+import { useLocation, useNavigate } from 'react-router-dom';
 import avatar1 from '../../assets/images/user/avatar-2.jpg';
-import { hanldeGetAllOrdersByUser, hanldeGetPrdouctsBySupplier, hanldeGetUserDetails } from 'apis/users';
+import './profile.css';
+import { handleUpdateUserStatus, hanldeGetAllOrdersByUser, hanldeGetPrdouctsBySupplier, hanldeGetUserDetails } from 'apis/users';
 import ProductsList from './productsTable';
 import OrdersList from './ordersTable';
-import './profile.css'
+import Loader from 'components/Loader/Loader';
 
 const Profile = () => {
     const location = useLocation();
     const { item } = location.state;
-
+    const navigate = useNavigate()
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState('');
     const [products, setProducts] = useState([]);
@@ -44,7 +45,6 @@ const Profile = () => {
                 }
                 if (userResponse.data) {
                     setUserdata(userResponse.data);
-                    console.log(userResponse.data)
                 } else {
                     setError('Failed to fetch userdata');
                 }
@@ -76,7 +76,34 @@ const Profile = () => {
         setCurrentPageOrders(1);
     };
 
+    const handleUserStatusChange = async (accountState) => {
+        setLoading(true);
+        try {
+            await handleUpdateUserStatus(item._id, item.phoneNumber, accountState);
+            const updatedUserResponse = await hanldeGetUserDetails(item._id);
+            setUserdata(updatedUserResponse.data);
+        } catch (error) {
+            setError('Failed to update user status');
+        } finally {
+            setLoading(false);
+        }
+    };
+    
+    const handleDeleteUser = async () => {
+        setLoading(true);
+        try {
+            await handleDeleteUser(item._id);
+            navigate('/supplier')
+        } catch (error) {
+            setError('Failed to update user status');
+        } finally {
+            setLoading(false);
+        }
+    };
+
     if (!item) return <p>Loading...</p>;
+
+    if (loading && userdata.length === 0 && orders.length === 0 && products.length === 0) return <Loader />
 
     return (
         <React.Fragment>
@@ -94,21 +121,47 @@ const Profile = () => {
                         <Card.Text className="TextMuted fw-bold">
                             Type:  {userdata.more && userdata.more.supplierType}
                         </Card.Text>
+                            <Col>
+                                <Button
+                                    variant={userdata.basic && userdata.basic.accountState === 'active' ? 'warning' : 'success'}
+                                    onClick={() => handleUserStatusChange(userdata.basic && userdata.basic.accountState === 'active' ? 'inactive' : 'active')}
+                                >
+                                    {userdata.basic && userdata.basic.accountState === 'active' ? 'Block User' : 'Activate User'}
+                                </Button>
+                            </Col>
+                            <Col>
+                                <Button
+                                    variant={'danger'}
+                                    onClick={() => handleDeleteUser()}
+                                >
+                                    Delete
+                                </Button>
+                            </Col>
                     </Card.Body>
                     <Card.Footer className="CardFooter">
-
                         <Row>
+                            {userdata.basic && userdata.basic.accountState === 'inActive' &&
+                                <Card.Text className='bg-warning'>
+                                    Warning: This user is not active
+                                </Card.Text>
+                            }
                             <Card.Text>
-                                Status:  <span className='p-1 m-1 bg-success text-white rounded'> {userdata.basic && userdata.basic.accountState}</span>
+                                Status:  <span className={`p-1 m-1 ${userdata.basic && userdata.basic.accountState === 'active' ? 'bg-success' : 'bg-danger'} text-white rounded`}>
+                                    {userdata.basic && userdata.basic.accountState}
+                                </span>
                             </Card.Text>
                             <Card.Text>
                                 Region: {userdata.more && userdata.more.region.map((item, index) => (
-                                    <span key={index} className='p-1  theme-bg rounded m-1  text-white fw-bold'>{item.wilaya_name_ascii+', '+item.commune_name_ascii}</span>
+                                    <span key={index} className='p-1 theme-bg rounded m-1 text-white fw-bold'>
+                                        {item.wilaya_name_ascii + ', ' + item.commune_name_ascii}
+                                    </span>
                                 ))}
                             </Card.Text>
                             <Card.Text>
                                 Category: {userdata.more && userdata.more.productCategory.map((item, index) => (
-                                    <span key={index} className='p-1 m-1 theme-bg2 rounded m-1  text-white fw-bold'>{item.name}</span>
+                                    <span key={index} className='p-1 m-1 theme-bg2 rounded m-1 text-white fw-bold'>
+                                        {item.name}
+                                    </span>
                                 ))}
                             </Card.Text>
                             <Card.Text>
