@@ -50,7 +50,6 @@ const routes = [
     path: '*',
     layout: AdminLayout,
     routes: [
-
       {
         exact: 'true',
         path: '/login',
