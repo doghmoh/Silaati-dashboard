@@ -1,6 +1,6 @@
-import React, { useEffect, useState } from 'react';
+import React, { useContext, useEffect, useState } from 'react';
 import { Row, Col, Card, Table, Tabs, Tab, Pagination, Form } from 'react-bootstrap';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import { handleStats } from 'apis/dashboard';
 
 import avatar1 from '../../assets/images/user/avatar-1.jpg';
@@ -12,6 +12,8 @@ import { hanldeGetAllUsers } from 'apis/users';
 import PieDonutChart from 'views/charts/nvd3-chart/chart/PieDonutChart';
 import BarDiscreteChart from 'views/charts/nvd3-chart/chart/BarDiscreteChart';
 import LineChart from 'views/charts/nvd3-chart/chart/LineChart';
+import AsyncStorage from '@react-native-async-storage/async-storage';
+import { AuthContext } from 'contexts/userContext';
 
 const dashSalesData = [
   { title: 'Daily Sales', amount: '$249.95', icon: 'icon-arrow-up text-c-green', value: 50, class: 'progress-c-theme' },
@@ -73,7 +75,7 @@ const initialData = [
 
 const DashDefault = () => {
 
-
+  const navigate = useNavigate();
   const [orderStats, setOrderStats] = useState(null);
   const [userList, setUserList] = useState([]);
   const [userRelatedStats, setUserRelatedStats] = useState(null);
@@ -81,6 +83,8 @@ const DashDefault = () => {
   const [retailersSpendStats, setRetailersSpendStats] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
+
+
 
   useEffect(() => {
     const fetchOrderStats = async () => {
@@ -653,7 +657,7 @@ const DashDefault = () => {
             <PieDonutChart2 data={sampleData2} />
           </div>
         </Col>
-       
+
         <Col xl={5}>
           <Card>
             <Card.Header>

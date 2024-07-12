@@ -50,6 +50,12 @@ const routes = [
     path: '*',
     layout: AdminLayout,
     routes: [
+
+      {
+        exact: 'true',
+        path: '/login',
+        element: lazy(() => import('./views/auth/signin/SignIn1'))
+      },
       {
         exact: 'true',
         path: '/dashboard',
@@ -109,11 +115,6 @@ const routes = [
         exact: 'true',
         path: '/maps/google-map',
         element: lazy(() => import('./views/maps/GoogleMaps'))
-      },
-      {
-        exact: 'true',
-        path: '/login',
-        element: lazy(() => import('./views/auth/signin/SignIn1'))
       },
       {
         path: '*',

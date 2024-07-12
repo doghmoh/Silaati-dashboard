@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useContext, useState } from 'react';
 import { Card, ListGroup, Dropdown } from 'react-bootstrap';
 import { Link } from 'react-router-dom';
 import PerfectScrollbar from 'react-perfect-scrollbar';
@@ -9,9 +9,29 @@ import avatar1 from '../../../../assets/images/user/avatar-1.jpg';
 import avatar2 from '../../../../assets/images/user/avatar-2.jpg';
 import avatar3 from '../../../../assets/images/user/avatar-3.jpg';
 import avatar4 from '../../../../assets/images/user/avatar-4.jpg';
+import AsyncStorage from '@react-native-async-storage/async-storage';
+import { AuthContext } from 'contexts/userContext';
 
 const NavRight = () => {
   const [listOpen, setListOpen] = useState(false);
+  const configContext = useContext(AuthContext);
+  const { dispatch } = configContext;
+
+  const handleLogout = async () => {
+    try {
+      await handleLogout();
+      dispatch({ type: LOGOUT });
+
+      // Storing user data and tokens in AsyncStorage
+      await AsyncStorage.removeItem('userdata');
+      await AsyncStorage.removeItem('userId');
+      await AsyncStorage.removeItem('accessToken');
+      await AsyncStorage.removeItem('refreshToken');
+
+    } catch (err) {
+      setError(err);
+    }
+  }
 
   const notiData = [
     {
@@ -124,7 +144,7 @@ const NavRight = () => {
               <div className="pro-head">
                 <img src={avatar1} className="img-radius" alt="User Profile" />
                 <span>John Doe</span>
-                <Link to="/login" className="dud-logout" title="Logout">
+                <Link onClick={handleLogout} className="dud-logout" title="Logout">
                   <i className="feather icon-log-out" />
                 </Link>
               </div>
