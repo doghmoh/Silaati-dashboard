@@ -1,6 +1,6 @@
 import React, { useContext, useState } from 'react';
 import { Card, ListGroup, Dropdown } from 'react-bootstrap';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import PerfectScrollbar from 'react-perfect-scrollbar';
 
 import ChatList from './ChatList';
@@ -11,13 +11,15 @@ import avatar3 from '../../../../assets/images/user/avatar-3.jpg';
 import avatar4 from '../../../../assets/images/user/avatar-4.jpg';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { AuthContext } from 'contexts/userContext';
+import { LOGOUT } from 'store/actions';
+import { handleLogout } from 'apis/api';
 
 const NavRight = () => {
   const [listOpen, setListOpen] = useState(false);
   const configContext = useContext(AuthContext);
   const { dispatch } = configContext;
-
-  const handleLogout = async () => {
+const navigate = useNavigate()
+  const handleLogoutt = async () => {
     try {
       await handleLogout();
       dispatch({ type: LOGOUT });
@@ -27,9 +29,8 @@ const NavRight = () => {
       await AsyncStorage.removeItem('userId');
       await AsyncStorage.removeItem('accessToken');
       await AsyncStorage.removeItem('refreshToken');
-
-    } catch (err) {
-      setError(err);
+navigate('/login')
+    } catch (err) {console.log(err)
     }
   }
 
@@ -144,7 +145,7 @@ const NavRight = () => {
               <div className="pro-head">
                 <img src={avatar1} className="img-radius" alt="User Profile" />
                 <span>John Doe</span>
-                <Link onClick={handleLogout} className="dud-logout" title="Logout">
+                <Link onClick={handleLogoutt} className="dud-logout" title="Logout">
                   <i className="feather icon-log-out" />
                 </Link>
               </div>
