@@ -7,7 +7,7 @@ import { handleUpdateUserImage, handleUpdateUserStatus, hanldeGetAllOrdersByUser
 import ProductsList from './productsTable';
 import OrdersList from './ordersTable';
 import Loader from 'components/Loader/Loader';
-import ConfirmModal from 'components/Modal/ConfirmOperation';
+import OrderDetailsModal from 'components/Modal/OrderDetailsModal';
 
 const Profile = () => {
     const location = useLocation();
@@ -23,9 +23,12 @@ const Profile = () => {
     const [currentPageOrders, setCurrentPageOrders] = useState(1);
     const [itemsPerPageOrders, setItemsPerPageOrders] = useState(5);
     const [imageBase64, setImageBase64] = useState('');
-    const [showConfirm, setShowConfirm] = useState(false);
-    const handleShowConfirm = () => setShowConfirm(true);
-    const handleCloseConfirm = () => setShowConfirm(false);
+
+
+    const [showModal, setShowModal] = useState(false);
+    const [selectedOrder, setSelectedOrder] = useState(null);
+
+
 
 
     const clearState = () => {
@@ -91,61 +94,60 @@ const Profile = () => {
     };
 
     const handleUserStatusChange = async (accountState) => {
-        setLoading(true);
-        try {
-            await handleUpdateUserStatus(item._id, item.phoneNumber, accountState);
-            const updatedUserResponse = await hanldeGetUserDetails(item._id);
-            setUserdata(updatedUserResponse.data);
-        } catch (error) {
-            setError('Failed to update user status');
-        } finally {
-            setLoading(false);
+        const conf = window.confirm('Are you sure you want to perform this action?')
+        if (conf) {
+            setLoading(true);
+            try {
+                await handleUpdateUserStatus(item._id, item.phoneNumber, accountState);
+                const updatedUserResponse = await hanldeGetUserDetails(item._id);
+                setUserdata(updatedUserResponse.data);
+            } catch (error) {
+                setError('Failed to update user status');
+            } finally {
+                setLoading(false);
+            }
         }
+        else
+            console.log('Action cancelled');
     };
 
 
     const handleDeleteUser = async () => {
-        setLoading(true);
-        try {
-            await handleDeleteUser(item._id);
-            navigate('/supplier')
-        } catch (error) {
-            setError('Failed to update user status');
-        } finally {
-            setLoading(false);
+
+        if (window.confirm('Are you sure you want to perform this action?')) {
+            setLoading(true);
+            try {
+                await handleDeleteUser(item._id);
+                navigate('/supplier')
+            } catch (error) {
+                setError('Failed to update user status');
+            } finally {
+                setLoading(false);
+            }
         }
+        else
+            console.log('Action cancelled');
+
     };
 
     const handleDeletImage = async () => {
-        setLoading(true);
-        try {
-            await handleUpdateUserImage(item._id, item.phoneNumber);
-            fetchProfileData()
-        } catch (error) {
-            setError('Failed to update user status');
-        } finally {
-            setLoading(false);
+        if (window.confirm('Are you sure you want to perform this action?')) {
+
+            setLoading(true);
+            try {
+                await handleUpdateUserImage(item._id, item.phoneNumber);
+                fetchProfileData()
+            } catch (error) {
+                setError('Failed to update user status');
+            } finally {
+                setLoading(false);
+            }
+            console.log('Action confirmed and performed');
+        } else {
+            console.log('Action cancelled');
         }
     }
 
-
-    const handleConfirmAction = (actionType) => {
-        // Perform different actions based on actionType
-        switch (actionType) {
-            case 'delete':
-                handleDeletImage()
-                break;
-            case 'deleteUser':
-                handleDeleteUser()
-                break;
-            case 'update':
-                handleUserStatusChange()
-                break;
-            default:
-                console.warn('Unhandled action type:', actionType);
-        }
-
-    }
     if (!item) return <p>Loading...</p>;
 
     if (loading && userdata.length === 0 && orders.length === 0 && products.length === 0) return <Loader />
@@ -180,7 +182,7 @@ const Profile = () => {
                         <Col>
                             <Button
                                 variant={'danger'}
-                                onClick={() => handleConfirmAction('deleteUser')}
+                                onClick={() => handleDeleteUser()}
                             >
                                 Delete
                             </Button>
@@ -263,13 +265,7 @@ const Profile = () => {
                     />
                 </Col>
             </Row>
-            <ConfirmModal
-                show={showConfirm}
-                handleClose={handleCloseConfirm}
-                handleConfirm={handleConfirmAction}
-                title="Are you sure?"
-                message="Do you really want to delete this item? This action cannot be undone."
-            />
+
         </React.Fragment>
     );
 };

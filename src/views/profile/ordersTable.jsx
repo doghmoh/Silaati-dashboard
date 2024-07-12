@@ -108,7 +108,7 @@ const OrdersList = ({
                 )}
             </Card.Body>
 
-            <OrderDetailsModal visible={showModal} order={selectedOrder} closeModal={setShowModal} />
+            <OrderDetailsModal visible={showModal} order={orders} closeModal={setShowModal} />
         </Card>
     );
 };
