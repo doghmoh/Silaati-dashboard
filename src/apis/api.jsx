@@ -1,7 +1,4 @@
-import AsyncStorage from '@react-native-async-storage/async-storage';
 import axios from 'axios';
-import { useReducer } from 'react';
-import auth, { initialState } from 'store/accountReducer';
 
 
  const apiUrl = import.meta.env.VITE_APP_API_URL;
@@ -17,7 +14,7 @@ export const api = axios.create({
 
 export const setAuthToken = async () => {
 
-    const accessToken = await AsyncStorage.getItem('accessToken');
+    const accessToken =  localStorage.getItem('accessToken');
     if (accessToken) {
         api.defaults.headers.common['Authorization'] = `Bearer ${accessToken}`;
     } else {

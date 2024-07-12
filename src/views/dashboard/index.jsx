@@ -10,16 +10,6 @@ import PieDonutChart2 from 'views/charts/nvd3-chart/chart/PieDonutChart2';
 import GroupedColumnChart from 'views/charts/nvd3-chart/chart/GroupedChart';
 import { hanldeGetAllUsers } from 'apis/users';
 import PieDonutChart from 'views/charts/nvd3-chart/chart/PieDonutChart';
-import BarDiscreteChart from 'views/charts/nvd3-chart/chart/BarDiscreteChart';
-import LineChart from 'views/charts/nvd3-chart/chart/LineChart';
-import AsyncStorage from '@react-native-async-storage/async-storage';
-import { AuthContext } from 'contexts/userContext';
-
-const dashSalesData = [
-  { title: 'Daily Sales', amount: '$249.95', icon: 'icon-arrow-up text-c-green', value: 50, class: 'progress-c-theme' },
-  { title: 'Monthly Sales', amount: '$2.942.32', icon: 'icon-arrow-down text-c-red', value: 36, class: 'progress-c-theme2' },
-  { title: 'Yearly Sales', amount: '$8.638.32', icon: 'icon-arrow-up text-c-green', value: 70, color: 'progress-c-theme' }
-];
 
 const initialData = [
   { wilayacode: '01', wilayaname: 'Adrar', supplier: 0, retailer: 0 },
@@ -74,8 +64,6 @@ const initialData = [
 
 
 const DashDefault = () => {
-
-  const navigate = useNavigate();
   const [orderStats, setOrderStats] = useState(null);
   const [userList, setUserList] = useState([]);
   const [userRelatedStats, setUserRelatedStats] = useState(null);
@@ -205,7 +193,7 @@ const DashDefault = () => {
     </React.Fragment>
   );
 
-
+if(!orderStats && !userList && !topProductsSold && !retailersSpendStats && userRelatedStats) return <div>Loading...</div>
   return (
     <React.Fragment>
       <Row>

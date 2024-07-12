@@ -3,7 +3,6 @@ import { Row, Col, Alert, Button } from 'react-bootstrap';
 import * as Yup from 'yup';
 import { Formik } from 'formik';
 import { LOGIN } from '../../../store/actions';
-import AsyncStorage from '@react-native-async-storage/async-storage';
 import { handleLogin } from 'apis/api';
 import { useNavigate } from 'react-router-dom';
 import { AuthContext } from 'contexts/userContext';
@@ -33,10 +32,10 @@ const JWTLogin = () => {
         dispatch({ type: LOGIN, payload: { user :userdata } });
 
         // Storing user data and tokens in AsyncStorage
-        await AsyncStorage.setItem('userdata', JSON.stringify(userdata));
-        await AsyncStorage.setItem('userId', userdata.user._id);
-        await AsyncStorage.setItem('accessToken', userdata.accessToken);
-        await AsyncStorage.setItem('refreshToken', userdata.refreshToken);
+         localStorage.setItem('userdata', JSON.stringify(userdata));
+         localStorage.setItem('userId', userdata.user._id);
+         localStorage.setItem('accessToken', userdata.accessToken);
+         localStorage.setItem('refreshToken', userdata.refreshToken);
 
         // Navigating to the dashboard upon successful login
         navigate('/api/v1/dashboard');

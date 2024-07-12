@@ -9,7 +9,6 @@ import avatar1 from '../../../../assets/images/user/avatar-1.jpg';
 import avatar2 from '../../../../assets/images/user/avatar-2.jpg';
 import avatar3 from '../../../../assets/images/user/avatar-3.jpg';
 import avatar4 from '../../../../assets/images/user/avatar-4.jpg';
-import AsyncStorage from '@react-native-async-storage/async-storage';
 import { AuthContext } from 'contexts/userContext';
 import { LOGOUT } from 'store/actions';
 import { handleLogout } from 'apis/api';
@@ -25,10 +24,10 @@ const navigate = useNavigate()
       dispatch({ type: LOGOUT });
 
       // Storing user data and tokens in AsyncStorage
-      await AsyncStorage.removeItem('userdata');
-      await AsyncStorage.removeItem('userId');
-      await AsyncStorage.removeItem('accessToken');
-      await AsyncStorage.removeItem('refreshToken');
+      await localStorage.removeItem('userdata');
+      await localStorage.removeItem('userId');
+      await localStorage.removeItem('accessToken');
+      await localStorage.removeItem('refreshToken');
 navigate('/login')
     } catch (err) {console.log(err)
     }
