@@ -1,12 +1,13 @@
 import React, { useState, useEffect } from 'react';
-import { Card, Container, Row, Col, Button } from 'react-bootstrap';
+import { Card, Container, Row, Col, Button, CardGroup } from 'react-bootstrap';
 import { useLocation, useNavigate } from 'react-router-dom';
 import avatar1 from '../../assets/images/user/avatar-2.jpg';
 import './profile.css';
-import { handleUpdateUserStatus, hanldeGetAllOrdersByUser, hanldeGetPrdouctsBySupplier, hanldeGetUserDetails } from 'apis/users';
+import { handleUpdateUserImage, handleUpdateUserStatus, hanldeGetAllOrdersByUser, hanldeGetPrdouctsBySupplier, hanldeGetUserDetails } from 'apis/users';
 import ProductsList from './productsTable';
 import OrdersList from './ordersTable';
 import Loader from 'components/Loader/Loader';
+import ConfirmModal from 'components/Modal/ConfirmOperation';
 
 const Profile = () => {
     const location = useLocation();
@@ -21,40 +22,53 @@ const Profile = () => {
     const [itemsPerPageProducts, setItemsPerPageProducts] = useState(5);
     const [currentPageOrders, setCurrentPageOrders] = useState(1);
     const [itemsPerPageOrders, setItemsPerPageOrders] = useState(5);
+    const [imageBase64, setImageBase64] = useState('');
+    const [showConfirm, setShowConfirm] = useState(false);
+    const handleShowConfirm = () => setShowConfirm(true);
+    const handleCloseConfirm = () => setShowConfirm(false);
+
+
+    const clearState = () => {
+        setProducts([])
+        setOrders([])
+        setUserdata([])
+        setError('')
+    }
+    const fetchProfileData = async () => {
+        setLoading(true);
+        setError('');
+        try {
+            const [productsResponse, ordersResponse, userResponse] = await Promise.all([
+                hanldeGetPrdouctsBySupplier(item._id),
+                hanldeGetAllOrdersByUser(item._id),
+                hanldeGetUserDetails(item._id)
+            ]);
+            if (productsResponse.data) {
+                setProducts(productsResponse.data);
+            } else {
+                setError('Failed to fetch products');
+            }
+
+            if (ordersResponse.data) {
+                setOrders(ordersResponse.data);
+            } else {
+                setError('Failed to fetch orders');
+            }
+            if (userResponse.data) {
+                setUserdata(userResponse.data);
+            } else {
+                setError('Failed to fetch userdata');
+            }
+        } catch (error) {
+            setError('Failed to fetch data');
+        } finally {
+            setLoading(false);
+        }
+    };
+
 
     useEffect(() => {
-        const fetchProfileData = async () => {
-            setLoading(true);
-            setError('');
-            try {
-                const [productsResponse, ordersResponse, userResponse] = await Promise.all([
-                    hanldeGetPrdouctsBySupplier(item._id),
-                    hanldeGetAllOrdersByUser(item._id),
-                    hanldeGetUserDetails(item._id)
-                ]);
-                if (productsResponse.data) {
-                    setProducts(productsResponse.data);
-                } else {
-                    setError('Failed to fetch products');
-                }
-
-                if (ordersResponse.data) {
-                    setOrders(ordersResponse.data);
-                } else {
-                    setError('Failed to fetch orders');
-                }
-                if (userResponse.data) {
-                    setUserdata(userResponse.data);
-                } else {
-                    setError('Failed to fetch userdata');
-                }
-            } catch (error) {
-                setError('Failed to fetch data');
-            } finally {
-                setLoading(false);
-            }
-        };
-
+        clearState()
         fetchProfileData();
     }, [item._id]);
 
@@ -88,7 +102,8 @@ const Profile = () => {
             setLoading(false);
         }
     };
-    
+
+
     const handleDeleteUser = async () => {
         setLoading(true);
         try {
@@ -101,6 +116,36 @@ const Profile = () => {
         }
     };
 
+    const handleDeletImage = async () => {
+        setLoading(true);
+        try {
+            await handleUpdateUserImage(item._id, item.phoneNumber);
+            fetchProfileData()
+        } catch (error) {
+            setError('Failed to update user status');
+        } finally {
+            setLoading(false);
+        }
+    }
+
+
+    const handleConfirmAction = (actionType) => {
+        // Perform different actions based on actionType
+        switch (actionType) {
+            case 'delete':
+                handleDeletImage()
+                break;
+            case 'deleteUser':
+                handleDeleteUser()
+                break;
+            case 'update':
+                handleUserStatusChange()
+                break;
+            default:
+                console.warn('Unhandled action type:', actionType);
+        }
+
+    }
     if (!item) return <p>Loading...</p>;
 
     if (loading && userdata.length === 0 && orders.length === 0 && products.length === 0) return <Loader />
@@ -110,7 +155,10 @@ const Profile = () => {
             <Container className="py-5">
                 <Card className="">
                     <Card.Header className="theme-bg ProfileCardBackgroundImage" variant="top" />
-                    <Card.Img className="ProfileCardImage" alt="User Image" src={item.src || avatar1} />
+                    <CardGroup>
+                        <Button onClick={handleDeletImage} className='deleteimg '> <i className="feather icon-trash" /></Button>
+                        <Card.Img className="ProfileCardImage" alt="User Image" src={item.src || avatar1} />
+                    </CardGroup>
                     <Card.Body className="text-center ProfileCardBody">
                         <Card.Text className="TextBold mt-5">
                             {item.firstName} {item.lastName}
@@ -121,22 +169,22 @@ const Profile = () => {
                         <Card.Text className="TextMuted fw-bold">
                             Type:  {userdata.more && userdata.more.supplierType}
                         </Card.Text>
-                            <Col>
-                                <Button
-                                    variant={userdata.basic && userdata.basic.accountState === 'active' ? 'warning' : 'success'}
-                                    onClick={() => handleUserStatusChange(userdata.basic && userdata.basic.accountState === 'active' ? 'inactive' : 'active')}
-                                >
-                                    {userdata.basic && userdata.basic.accountState === 'active' ? 'Block User' : 'Activate User'}
-                                </Button>
-                            </Col>
-                            <Col>
-                                <Button
-                                    variant={'danger'}
-                                    onClick={() => handleDeleteUser()}
-                                >
-                                    Delete
-                                </Button>
-                            </Col>
+                        <Col>
+                            <Button
+                                variant={userdata.basic && userdata.basic.accountState === 'active' ? 'warning' : 'success'}
+                                onClick={() => handleUserStatusChange(userdata.basic && userdata.basic.accountState === 'active' ? 'inactive' : 'active')}
+                            >
+                                {userdata.basic && userdata.basic.accountState === 'active' ? 'Block User' : 'Activate User'}
+                            </Button>
+                        </Col>
+                        <Col>
+                            <Button
+                                variant={'danger'}
+                                onClick={() => handleConfirmAction('deleteUser')}
+                            >
+                                Delete
+                            </Button>
+                        </Col>
                     </Card.Body>
                     <Card.Footer className="CardFooter">
                         <Row>
@@ -215,6 +263,13 @@ const Profile = () => {
                     />
                 </Col>
             </Row>
+            <ConfirmModal
+                show={showConfirm}
+                handleClose={handleCloseConfirm}
+                handleConfirm={handleConfirmAction}
+                title="Are you sure?"
+                message="Do you really want to delete this item? This action cannot be undone."
+            />
         </React.Fragment>
     );
 };

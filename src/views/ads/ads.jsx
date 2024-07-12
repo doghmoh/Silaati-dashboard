@@ -1,4 +1,4 @@
-import { hanldeAddNewAds, hanldeGetAllAds } from 'apis/ads';
+import { hanldeAddNewAds, hanldeDeleteAds, hanldeGetAllAds } from 'apis/ads';
 import React, { useEffect, useState } from 'react';
 import { Form, Button, Row, Col, Card, Table } from 'react-bootstrap';
 
@@ -42,10 +42,9 @@ const MyFormComponent = () => {
         }
     };
 
-    const handleDelete = async (event) => {
-        event.preventDefault();
+    const handleDelete = async (id) => {
         try {
-            const res = await handleDelete(id);
+            const res = await hanldeDeleteAds(id);
             if (res) {
                 alert('Ads deleted ')
                 fetchAdsList()
@@ -62,6 +61,7 @@ const MyFormComponent = () => {
 
     const handleImageUpload = (event) => {
         const file = event.target.files[0];
+    
         if (file) {
             const reader = new FileReader();
             reader.onloadend = () => {
@@ -69,7 +69,7 @@ const MyFormComponent = () => {
             };
             reader.readAsDataURL(file);
             setImage(file);
-            console.log(imageBase64)
+            console.log(file)
         }
     };
     if (loading) <div>Loading...</div>;

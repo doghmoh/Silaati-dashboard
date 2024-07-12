@@ -1,8 +1,9 @@
 // OrdersList.js
 
-import React from 'react';
+import React, { useState } from 'react';
 import { Card, Table, Pagination, Form, Button } from 'react-bootstrap';
 import Loader from 'components/Loader/Loader'; // Assuming Loader is a spinner component
+import OrderDetailsModal from 'components/Modal/OrderDetailsModal';
 
 const OrdersList = ({
     orders,
@@ -13,6 +14,19 @@ const OrdersList = ({
     loading,
     error
 }) => {
+
+    const [showModal, setShowModal] = useState(false);
+    const [selectedOrder, setSelectedOrder] = useState(null);
+
+    const handleOpenModal = (order) => {
+        setSelectedOrder(order);
+        setShowModal(true);
+    };
+
+    const handleCloseModal = () => {
+        setShowModal(false);
+        setSelectedOrder(null);
+    };
     const paginatedOrders = orders.slice((currentPage - 1) * itemsPerPage, currentPage * itemsPerPage);
 
     const handlePageChange = (pageNumber) => {
@@ -75,7 +89,7 @@ const OrdersList = ({
                                             <td>{order.payment.finalTotal} DA</td>
                                             <td><span className={`status ${order.status.toLowerCase()} label text-white f-12`}>{order.status}</span></td>
                                             <td>
-                                                <Button variant="primary" onClick={() => handleOpenModal(order)}>
+                                            <Button variant="primary" onClick={() => handleOpenModal(item)}>
                                                     View Details
                                                 </Button>
                                             </td>
@@ -93,6 +107,8 @@ const OrdersList = ({
                     </>
                 )}
             </Card.Body>
+
+            <OrderDetailsModal visible={showModal} order={selectedOrder} closeModal={setShowModal} />
         </Card>
     );
 };

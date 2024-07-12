@@ -26,7 +26,7 @@ export const hanldeAddNewAds = async (title, content, type, src) => {
 export const hanldeDeleteAds = async (id) => {
     try {
         setAuthToken()
-        const response = await api.post(`api/v1/announcements/${id}`, { });
+        const response = await api.delete(`api/v1/announcements/${id}`, { });
         return handleApiResponseData(response, 'delete ads Successfully', 'delete ads failed');
     } catch (error) {
         handleApiError(error);
