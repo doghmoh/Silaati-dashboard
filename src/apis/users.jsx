@@ -12,6 +12,29 @@ export const hanldeGetAllUsers = async () => {
 };
 
 
+export const hanldeGetAdmin = async (id) => {
+    try {
+        setAuthToken()
+        const response = await api.get(`api/v1/users/all-mods`, {});
+        return handleApiResponseData(response, 'Get User DATA Successfully', 'Get User DATA failed');
+    } catch (error) {
+        handleApiError(error);
+    }
+};
+
+
+export const handleCreateAgents = async (newAgent) => {
+    const { firstName, lastName, phoneNumber, password } = newAgent
+    const role = 'agent'
+    try {
+        setAuthToken()
+        const response = await api.post(`api/v1/register`, { firstName, lastName, phoneNumber, role, password });
+        return handleApiResponseData(response, 'create agents  Successfully', 'create agents  failed');
+    } catch (error) {
+        handleApiError(error);
+    }
+};
+
 export const hanldeGetUserDetails = async (supplierId) => {
     try {
         setAuthToken()
@@ -68,7 +91,6 @@ export const handleUpdateUserImage = async (userId, phoneNumber) => {
 };
 
 export const handleDeleteUser = async (userId) => {
-    console.log(userId, accountState)
     try {
         setAuthToken()
         const response = await api.delete(`api/v1/users/${userId}`, {});

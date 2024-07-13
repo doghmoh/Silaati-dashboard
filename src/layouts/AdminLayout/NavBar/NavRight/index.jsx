@@ -17,19 +17,20 @@ const NavRight = () => {
   const [listOpen, setListOpen] = useState(false);
   const configContext = useContext(AuthContext);
   const { dispatch } = configContext;
-const navigate = useNavigate()
+  const navigate = useNavigate()
   const handleLogoutt = async () => {
     try {
       await handleLogout();
       dispatch({ type: LOGOUT });
 
       // Storing user data and tokens in AsyncStorage
-      await localStorage.removeItem('userdata');
-      await localStorage.removeItem('userId');
-      await localStorage.removeItem('accessToken');
-      await localStorage.removeItem('refreshToken');
-navigate('/login')
-    } catch (err) {console.log(err)
+      localStorage.removeItem('userdata');
+      localStorage.removeItem('userId');
+      localStorage.removeItem('accessToken');
+      localStorage.removeItem('refreshToken');
+      navigate('/login')
+    } catch (err) {
+      console.log(err)
     }
   }
 

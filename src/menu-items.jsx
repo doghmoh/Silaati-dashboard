@@ -81,12 +81,14 @@ const menuItems = {
           title: 'Profile',
           type: 'item',
           icon: 'feather icon-box',
+          url: '/admin'
         },
         {
           id: 'component',
-          title: 'Authentification',
+          title: 'Admin',
           type: 'item',
           icon: 'feather icon-box',
+          url: '/admin'
         }
       ]
     },
