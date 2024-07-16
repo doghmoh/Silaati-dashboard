@@ -132,3 +132,38 @@ export const handleDeleteFeedback = async (userId) => {
     }
 }
 
+
+export const handleGetAgentOtp = async () => {
+    try {
+        setAuthToken()
+        const response = await api.get(`api/v1/get-agents-otp`, {});
+        console.log(response.data)
+        return handleApiResponseData(response, 'GET agent  Successfully', 'GET agent failed');
+    } catch (error) {
+        handleApiError(error);
+    }
+}
+
+export const handleSetAgentOtp = async (otp) => {
+    try {
+        setAuthToken()
+        const response = await api.post(`/api/v1/set-agents-otp`, {otp});
+        console.log(response.data)
+        return handleApiResponseData(response, 'set agent  Successfully', 'set agent failed');
+    } catch (error) {
+        handleApiError(error);
+    }
+
+}
+
+export const handleVerifyAgentOtp = async (phoneNumber,otp) => {
+    try {
+        setAuthToken()
+        const response = await api.post(`/api/v1/verify-agents-otp`, {phoneNumber,otp});
+        console.log(response.data)
+        return handleApiResponseData(response, 'Verify agent  Successfully', 'Verify agent failed');
+    } catch (error) {
+        handleApiError(error);
+    }
+}
+
