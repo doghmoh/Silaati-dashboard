@@ -16,31 +16,31 @@ const menuItems = {
       ]
     },
     {
-      id: 'ui-element',
+      id: 'crm',
       title: 'CRM',
       type: 'group',
       icon: 'icon-ui',
       children: [
         {
-          id: 'component',
+          id: 'customers',
           title: 'Customers',
           type: 'collapse',
           icon: 'feather icon-box',
           children: [
             {
-              id: 'button',
+              id: 'retailers',
               title: 'Retailers',
               type: 'item',
               url: '/retailers'
             },
             {
-              id: 'badges',
+              id: 'suppliers',
               title: 'Suppliers',
               type: 'item',
               url: '/suppliers'
             },
             {
-              id: 'breadcrumb',
+              id: 'company',
               title: 'Company',
               type: 'item',
               url: '/company'
@@ -48,47 +48,87 @@ const menuItems = {
           ]
         },
         {
-          id: 'component',
+          id: 'orders',
           title: 'Orders',
           type: 'item',
           icon: 'feather icon-box',
           url: '/orders'
         },
         {
-          id: 'component',
+          id: 'products',
           title: 'Products',
           type: 'item',
           icon: 'feather icon-box',
           url: '/products'
         },
         {
-          id: 'component',
+          id: 'ads',
           title: 'Advertisment',
           type: 'item',
           icon: 'feather icon-box',
           url: '/ads'
+        },
+      ]
+    },
+    {
+      id: 'global',
+      title: 'Global',
+      type: 'group',
+      icon: 'icon-ui',
+      children: [
+        {
+          id: 'variables',
+          title: 'Variables',
+          type: 'collapse',
+          icon: 'feather icon-box',
+          children: [
+            {
+              id: 'businessTypes',
+              title: 'Business Types',
+              type: 'item',
+              url: '/businessTypes'
+            },
+            {
+              id: 'categoryTypes',
+              title: 'Category Types',
+              type: 'item',
+              url: '/categoryTypes'
+            },
+            {
+              id: 'itemTypes',
+              title: 'Item Types',
+              type: 'item',
+              url: '/itemTypes'
+            },
+            {
+              id: 'packagingTypes',
+              title: 'Packaging Types',
+              type: 'item',
+              url: '/packagingTypes'
+            }
+          ]
         }
       ]
     },
     {
-      id: 'ui-element',
+      id: 'settings',
       title: 'Settings',
       type: 'group',
       icon: 'icon-ui',
       children: [
         {
-          id: 'component',
-          title: 'Profile',
+          id: 'roles',
+          title: 'Roles',
           type: 'item',
           icon: 'feather icon-box',
           url: '/admin'
         },
         {
-          id: 'component',
-          title: 'Admin',
+          id: 'feedback',
+          title: 'Feedback',
           type: 'item',
           icon: 'feather icon-box',
-          url: '/admin'
+          url: '/feedback'
         }
       ]
     },

@@ -1,0 +1,79 @@
+.Background {
+    height: 100vh;
+    width: 100vw;
+    background-color: hsl(185, 75%, 39%);
+}
+
+.ProfileCard {
+    width: 350px;
+    border-radius: 20px !important;
+    border: none !important;
+}
+
+.ProfileCardBody {
+    padding-top: 3.5rem !important;
+    padding-bottom: 2rem !important;
+}
+
+.ProfileCardBackgroundImage {
+    width: 100%;
+    height: 140px;
+    border-top-left-radius: 15px  !important;
+    border-top-right-radius: 15px !important;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.deleteimg{
+    width: 36px !important;
+    height: 36px !important;
+    position: absolute;
+    top: 10%;
+    left: 54%;
+    transform: translate(-50%, 0%); /* Corrected to center the image */
+    z-index: 999;
+    border: 1px solid rgb(190, 38, 38);
+    border-radius: 50%;
+    background-color: rgb(190, 38, 38);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+.btn > i {
+    margin-right: 0;
+  }
+
+.ProfileCardImage {
+    width: 156px !important;
+    height: 156px !important;
+    margin: auto;
+    position: absolute;
+    top: 10%;
+    left: 50%;
+    border: 5px white solid;
+    border-radius: 50% !important;
+    transform: translate(-50%, 0%); /* Corrected to center the image */
+}
+
+.TextMuted {
+    font-weight: 400;
+    color: hsl(0, 0%, 59%);
+}
+
+.TextBold {
+    font-size: 18px;
+    font-weight: 700;
+
+}
+
+.CardFooter {
+    background-color: white !important;
+    border-bottom-left-radius: 15px  !important;
+    border-bottom-right-radius: 15px !important;
+}
+
+.FooterP {
+    margin-bottom: 0;
+    margin-top: 0.5rem;
+}

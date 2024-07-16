@@ -34,8 +34,10 @@ const JWTLogin = () => {
         // Storing user data and tokens in AsyncStorage
          localStorage.setItem('userdata', JSON.stringify(userdata));
          localStorage.setItem('userId', userdata.user._id);
+         localStorage.setItem('role', userdata.user.role);
          localStorage.setItem('accessToken', userdata.accessToken);
          localStorage.setItem('refreshToken', userdata.refreshToken);
+         console.log(userdata.user.role)
 
         // Navigating to the dashboard upon successful login
         navigate('/api/v1/dashboard');

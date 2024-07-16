@@ -1,22 +1,23 @@
-import { hanldeGetAllUsers } from 'apis/users';
+import { handleDeleteFeedback, handleGetALlFeedback } from 'apis/users';
 import Loader from 'components/Loader/Loader';
 import React, { useEffect, useState } from 'react';
 import { Row, Col, Card, Table, Button } from 'react-bootstrap';
 import avatar2 from '../../assets/images/user/avatar-2.jpg';
+import { useNavigate } from 'react-router-dom';
 
-const Company = () => {
+const Feedback = () => {
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState('');
-    const [users, setUsers] = useState('');
-
+    const [feedback, setFeedback] = useState([]);
     const fetchUsers = async () => {
         setLoading(true);
         setError('');
         try {
-            const response = await hanldeGetAllUsers();
+            const response = await handleGetALlFeedback();
             if (response) {
                 setError('')
-                setUsers(response.data.filter(item => item.role === 'company'))
+                setFeedback(response.data)
+                console.log('aaaaaaaaaaaaaaaa', response.data)
             } else {
                 setError('Data not loaded correctly');
             }
@@ -30,31 +31,32 @@ const Company = () => {
     useEffect(() => {
         fetchUsers();
     }, [])
+
     if (loading) return <Loader />
     if (error) return <div>{error}</div>
-    if (!users) return <div>data not loaded correctly...</div>
+    if (!feedback) return <div>data not loaded correctly...</div>
     return (
         <React.Fragment>
             <Row>
                 <Col>
                     <Card>
                         <Card.Header>
-                            <Card.Title as="h5">Company List </Card.Title>
+                            <Card.Title as="h5">Feedback List </Card.Title>
                         </Card.Header>
                         <Card.Body>
                             <Table striped responsive>
                                 <thead>
                                     <tr>
                                         <th>#</th>
-                                        <th>Name</th>
-                                        <th>Phone</th>
-                                        <th>State</th>
+                                        <th>User</th>
+                                        <th>Title</th>
+                                        <th>Content</th>
                                         <th>CreatedAt</th>
                                         <th>Action</th>
                                     </tr>
                                 </thead>
                                 <tbody>
-                                    {users.map((item) =>
+                                    {feedback.map((item) =>
                                     (
                                         <tr>
                                             <th scope="row">1</th>
@@ -65,9 +67,10 @@ const Company = () => {
                                                 <h6 className="mb-1">{item.firstName + ' ' + item.lastName}</h6>
                                                 <p className="m-0">{item.phoneNumber}</p>
                                             </td>
-                                            <td>{item.createdAt}</td>
-                                            <td>{item.accountState}</td>
-                                            <td><Button onClick={() => navigate('/userdetails', { state: { item } })}>Details</Button></td>
+                                            <td>{item.title}</td>
+                                            <td>{item.content}</td>
+                                            <td>{new Date(item.createdAt).toLocaleString()}</td>
+                                            <td><Button onClick={() => handleDeleteFeedback(item._id)}>Delete</Button></td>
                                         </tr>
                                     )
                                     )}
@@ -81,4 +84,4 @@ const Company = () => {
     );
 };
 
-export default Company;
+export default Feedback;

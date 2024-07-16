@@ -6,10 +6,12 @@ import { handleStats } from 'apis/dashboard';
 import avatar1 from '../../assets/images/user/avatar-1.jpg';
 import avatar2 from '../../assets/images/user/avatar-2.jpg';
 import avatar3 from '../../assets/images/user/avatar-3.jpg';
+import prodimg from  '../../assets/images/icon.png';
 import PieDonutChart2 from 'views/charts/nvd3-chart/chart/PieDonutChart2';
-import GroupedColumnChart from 'views/charts/nvd3-chart/chart/GroupedChart';
 import { hanldeGetAllUsers } from 'apis/users';
 import PieDonutChart from 'views/charts/nvd3-chart/chart/PieDonutChart';
+import GroupedColumnChart from 'views/charts/nvd3-chart/chart/GroupedColumnChart';
+import Loader from 'components/Loader/Loader';
 
 const initialData = [
   { wilayacode: '01', wilayaname: 'Adrar', supplier: 0, retailer: 0 },
@@ -64,14 +66,14 @@ const initialData = [
 
 
 const DashDefault = () => {
-  const [orderStats, setOrderStats] = useState(null);
+  const [orderStats, setOrderStats] = useState({});
   const [userList, setUserList] = useState([]);
-  const [userRelatedStats, setUserRelatedStats] = useState(null);
-  const [topProductsSold, setTopProductsSold] = useState(null);
-  const [retailersSpendStats, setRetailersSpendStats] = useState(null);
+  const [userRelatedStats, setUserRelatedStats] = useState({});
+  const [topProductsSold, setTopProductsSold] = useState({});
+  const [retailersSpendStats, setRetailersSpendStats] = useState({});
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
-
+const navigate = useNavigate();
 
 
   useEffect(() => {
@@ -113,33 +115,38 @@ const DashDefault = () => {
 
 
   useEffect(() => {
-    // Update supplier and retailer counts based on locationStats changes
-    if (userRelatedStats && userRelatedStats.locationStats) {
-      const updatedWilayaData = wilayas.map(wilaya => {
-        const supplierData = userRelatedStats && userRelatedStats.locationStats.suppliersByWilaya[wilaya.wilayacode];
-        const retailerData = userRelatedStats && userRelatedStats.locationStats.retailersByWilaya[wilaya.wilayacode];
-        return {
-          ...wilaya,
-          supplier: supplierData ? supplierData.count : wilaya.supplier,
-          retailer: retailerData ? retailerData.count : wilaya.retailer
-        };
-      });
+    setLoading(true)
+    if (userRelatedStats.locationStats) {
+      const { suppliersByWilaya, retailersByWilaya } = userRelatedStats.locationStats;
 
-      setWilayaData(updatedWilayaData);
+      if (userRelatedStats && userRelatedStats.locationStats) {
+        const updatedWilayaData = wilayas.map(wilaya => {
+          const supplierData = userRelatedStats && suppliersByWilaya[wilaya.wilayacode];
+          const retailerData = userRelatedStats && retailersByWilaya[wilaya.wilayacode];
+          return {
+            ...wilaya,
+            supplier: supplierData ? supplierData.count : wilaya.supplier,
+            retailer: retailerData ? retailerData.count : wilaya.retailer
+          };
+        });
 
-      // Sort wilayas based on sortBy and sortOrder
-      updatedWilayaData.sort((a, b) => {
-        const sortFieldA = sortBy === 'supplier' ? a.supplier : a.retailer;
-        const sortFieldB = sortBy === 'supplier' ? b.supplier : b.retailer;
+        setWilayaData(updatedWilayaData);
 
-        if (sortOrder === 'asc') {
-          return sortFieldA - sortFieldB;
-        } else {
-          return sortFieldB - sortFieldA;
-        }
-      });
+        // Sort wilayas based on sortBy and sortOrder
+        updatedWilayaData.sort((a, b) => {
+          const sortFieldA = sortBy === 'supplier' ? a.supplier : a.retailer;
+          const sortFieldB = sortBy === 'supplier' ? b.supplier : b.retailer;
 
-      setWilayaData(updatedWilayaData);
+          if (sortOrder === 'asc') {
+            return sortFieldA - sortFieldB;
+          } else {
+            return sortFieldB - sortFieldA;
+          }
+        });
+
+        setWilayaData(updatedWilayaData);
+      }
+      setLoading(false)
     }
   }, [userRelatedStats && userRelatedStats.locationStats, sortBy, sortOrder]); // Update when locationStats or sorting criteria changes
 
@@ -155,21 +162,28 @@ const DashDefault = () => {
   };
 
 
-  if (loading && !userRelatedStats) return <div>Loading...</div>;
+  if (!orderStats && !userList && !topProductsSold && !retailersSpendStats && !userRelatedStats) return <Loader />
+
+  if (loading) return <Loader />;
   if (error) return <div>Error: {error.message}</div>;
 
+
+  const { roleStats, accountStateStats } = userRelatedStats.userStats;
+
+
   const sampleData = [
-    { key: 'Admin', y: userRelatedStats.userStats.roleStats.admin, color: '#ff8a65' },
-    { key: 'Suppliers', y: userRelatedStats.userStats.roleStats.supplier, color: '#f4c22b' },
-    { key: 'Retailers', y: userRelatedStats.userStats.roleStats.retailer, color: '#04a9f5' },
-    { key: 'Company', y: userRelatedStats.userStats.roleStats.courier, color: '#3ebfea' }
+    { key: 'Admin', y: roleStats.admin, color: '#ff8a65' },
+    { key: 'Suppliers', y: roleStats.supplier, color: '#f4c22b' },
+    { key: 'Retailers', y: roleStats.retailer, color: '#04a9f5' },
+    { key: 'Company', y: roleStats.courier, color: '#3ebfea' }
   ];
   const sampleData2 = [
-    { key: 'Active', y: userRelatedStats.userStats.accountStateStats.active, color: '#ff8a65' },
-    { key: 'inActive', y: userRelatedStats.userStats.accountStateStats.inactive, color: '#f4c22b' },
-    { key: 'Banned', y: userRelatedStats.userStats.accountStateStats.banned, color: '#04a9f5' },
-    { key: 'New', y: userRelatedStats.userStats.accountStateStats.new, color: '#3ebfea' }
+    { key: 'Active', y: accountStateStats.active, color: '#ff8a65' },
+    { key: 'inActive', y: accountStateStats.inactive, color: '#f4c22b' },
+    { key: 'Banned', y: accountStateStats.banned, color: '#04a9f5' },
+    { key: 'New', y: accountStateStats.new, color: '#3ebfea' }
   ];
+
 
 
   const tabContent = (
@@ -178,7 +192,7 @@ const DashDefault = () => {
         <div key={item._id} className="d-flex friendlist-box align-items-center justify-content-center m-b-20">
           <div className="m-r-10 photo-table flex-shrink-0">
             <Link to="#">
-              <img className="rounded-circle" style={{ width: '40px' }} src={avatar1} alt="activity-user" />
+              <img className="rounded-circle" style={{ width: '40px' }} src={prodimg} alt="activity-user" />
             </Link>
           </div>
           <div className="flex-grow-1 ms-3">
@@ -193,7 +207,7 @@ const DashDefault = () => {
     </React.Fragment>
   );
 
-if(!orderStats && !userList && !topProductsSold && !retailersSpendStats && userRelatedStats) return <div>Loading...</div>
+
   return (
     <React.Fragment>
       <Row>
@@ -300,14 +314,6 @@ if(!orderStats && !userList && !topProductsSold && !retailersSpendStats && userR
                     </tr>
                   )
                   )}
-                  <tr>
-                    <td></td>
-                    <td></td>
-                    <td></td>
-                    <td>
-                      <Link href='#' >Show more</Link>
-                    </td>
-                  </tr>
                 </tbody>
               </Table>
             </Card.Body>
@@ -317,19 +323,9 @@ if(!orderStats && !userList && !topProductsSold && !retailersSpendStats && userR
         <Col md={6} xl={4}>
           <Card className="card-event">
             <Card.Body>
-              <div className="row align-items-center justify-content-center">
-                <div className="col">
-                  <h5 className="m-0">Upcoming Event</h5>
-                </div>
-                <div className="col-auto">
-                  <label className="label theme-bg2 text-white f-14 f-w-400 float-end">34%</label>
-                </div>
+              <div className=''>
+                <PieDonutChart2 data={sampleData2} />
               </div>
-              <h2 className="mt-2 f-w-300">
-                45<sub className="text-muted f-14">Competitors</sub>
-              </h2>
-              <h6 className="text-muted mt-3 mb-0">You can participate in event </h6>
-              <i className="fab fa-angellist text-c-purple f-50" />
             </Card.Body>
           </Card>
           <Card>
@@ -344,7 +340,7 @@ if(!orderStats && !userList && !topProductsSold && !retailersSpendStats && userR
                 </div>
               </div>
             </Card.Body>
-            <Card.Body>
+            {/* <Card.Body>
               <div className="row d-flex align-items-center">
                 <div className="col-auto">
                   <i className="feather icon-map-pin f-30 text-c-blue" />
@@ -354,7 +350,7 @@ if(!orderStats && !userList && !topProductsSold && !retailersSpendStats && userR
                   <span className="d-block text-uppercase">total locations</span>
                 </div>
               </div>
-            </Card.Body>
+            </Card.Body> */}
           </Card>
         </Col>
         <Col md={6} xl={4}>
@@ -620,39 +616,30 @@ if(!orderStats && !userList && !topProductsSold && !retailersSpendStats && userR
         <Col md={6} xl={8} className="user-activity">
           <Card>
             <Tabs defaultActiveKey="today" id="uncontrolled-tab-example">
-              <Tab eventKey="today" title="Today">
+              <Tab eventKey="today" title="Top Products">
                 {tabContent}
-                <Link href='#' className='d-flex justify-content-end' >Show more</Link>
-              </Tab>
-              <Tab eventKey="week" title="This Week">
-                {tabContent}
-                <Link href='#' className='d-flex justify-content-end' >Show more</Link>
-              </Tab>
-              <Tab eventKey="all" title="All">
-                {tabContent}
-                <Link href='#' className='d-flex justify-content-end' >Show more</Link>
+                <Link to='/products' className='d-flex justify-content-end' >Show more</Link>
               </Tab>
             </Tabs>
           </Card>
         </Col>
-        <Col xl={4}>
-          <div className='card'>
-            <PieDonutChart data={sampleData} />
-          </div>
-        </Col>
-        <Col xl={4}>
-          <div className='card'>
-            <PieDonutChart2 data={sampleData2} />
-          </div>
+        <Col md={6} xl={4}>
+          <Card className="card-event">
+            <Card.Body>
+              <div className=''>
+                <PieDonutChart data={sampleData} />
+              </div>
+            </Card.Body>
+          </Card>
         </Col>
 
-        <Col xl={5}>
+        <Col xl={8}>
           <Card>
             <Card.Header>
               <Card.Title as="h5">User By wilaya List</Card.Title>
             </Card.Header>
             <Card.Body>
-              <Table responsive style={{ height: 500 + 'px', overflow: 'scroll' }}>
+              <Table responsive>
                 <thead>
                   <tr>
                     <th>Wilaya Code</th>
@@ -686,7 +673,7 @@ if(!orderStats && !userList && !topProductsSold && !retailersSpendStats && userR
                   </tr>
                 </thead>
                 <tbody>
-                  {wilayas.map(wilaya => (
+                  {wilayas.slice(0, 4).map(wilaya => (
                     <tr key={wilaya.wilaya_name_ascii}>
                       <th scope="row">{wilaya.wilayacode}</th>
                       <td>{wilaya.wilayaname}</td>
@@ -694,15 +681,25 @@ if(!orderStats && !userList && !topProductsSold && !retailersSpendStats && userR
                       <td>{wilaya.retailer}</td>
                     </tr>
                   ))}
+                  <tr>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                    <td><Link to="#">Show more</Link></td>
+                  </tr>
                 </tbody>
               </Table>
             </Card.Body>
           </Card>
         </Col>
-        <Col xl={7}>
-          <div className='card'>
-            <GroupedColumnChart data={retailersSpendStats.graphData} />
-          </div>
+        <Col md={12} xl={12}>
+          <Card className="card-event">
+            <Card.Body>
+              <div className=''>
+                {retailersSpendStats.graphData.length > 0 && <GroupedColumnChart data={retailersSpendStats.graphData} />}
+              </div>
+            </Card.Body>
+          </Card>
         </Col>
       </Row>
     </React.Fragment >

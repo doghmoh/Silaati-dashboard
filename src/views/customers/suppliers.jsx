@@ -1,7 +1,9 @@
 import { hanldeGetAllUsers } from 'apis/users';
+import Loader from 'components/Loader/Loader';
 import React, { useEffect, useState } from 'react';
 import { Row, Col, Card, Table, Button } from 'react-bootstrap';
 import { useNavigate } from 'react-router-dom';
+import avatar2 from '../../assets/images/user/avatar-2.jpg';
 
 const Suppliers = () => {
     const [loading, setLoading] = useState(false);
@@ -30,7 +32,9 @@ const Suppliers = () => {
         fetchUsers();
     }, [])
 
-    if (!users) return null
+    if (loading) return <Loader />
+    if (error) return <div>{error}</div>
+    if (!users) return <div>data not loaded correctly...</div>
     return (
         <React.Fragment>
             <Row>
@@ -47,6 +51,7 @@ const Suppliers = () => {
                                         <th>Name</th>
                                         <th>Phone</th>
                                         <th>State</th>
+                                        <th>CreatedAt</th>
                                         <th>Action</th>
                                     </tr>
                                 </thead>
@@ -55,9 +60,14 @@ const Suppliers = () => {
                                     (
                                         <tr>
                                             <th scope="row">1</th>
-                                            <td>{item.firstName}</td>
-                                            <td>{item.phoneNumber}</td>
-                                            <td>{item.accountState}</td>
+                                            <td>
+                                                <img className="rounded-circle" style={{ width: '40px' }} src={avatar2} alt="activity-user" />
+                                            </td>
+                                            <td>
+                                                <h6 className="mb-1">{item.firstName + ' ' + item.lastName}</h6>
+                                                <p className="m-0">{item.phoneNumber}</p>
+                                            </td>
+                                            <td>{new Date(item.createdAt).toLocaleString()}</td>
                                             <td><Button onClick={() => navigate('/userdetails', { state: { item } })}>Details</Button></td>
                                         </tr>
                                     )

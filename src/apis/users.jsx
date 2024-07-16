@@ -65,6 +65,16 @@ export const hanldeGetAllOrdersByUser = async (supplierId) => {
     }
 };
 
+export const hanldeGetAllOrdersByRetailerId = async (id) => {
+    try {
+        setAuthToken()
+        const response = await api.get(`api/v1/retailers/${id}/orders`, {});
+        return handleApiResponseData(response, 'Get All Orders Successfully', 'Get Orders failed');
+    } catch (error) {
+        handleApiError(error);
+    }
+};
+
 export const handleUpdateUserStatus = async (userId, phoneNumber, accountState) => {
     try {
         setAuthToken()
@@ -101,4 +111,24 @@ export const handleDeleteUser = async (userId) => {
     }
 }
 
+export const handleGetALlFeedback = async () => {
+    try {
+        setAuthToken()
+        const response = await api.get(`api/v1/feedbacks/all-feedbacks`, {});
+        console.log(response.data)
+        return handleApiResponseData(response, 'GET feedback  Successfully', 'GET feedback failed');
+    } catch (error) {
+        handleApiError(error);
+    }
+}
+export const handleDeleteFeedback = async (userId) => {
+    try {
+        setAuthToken()
+        const response = await api.delete(`api/v1/feedbacks/${userId}`, {});
+        console.log(response.data)
+        return handleApiResponseData(response, 'Delete feedback Successfully', 'Delete feedback failed');
+    } catch (error) {
+        handleApiError(error);
+    }
+}
 
