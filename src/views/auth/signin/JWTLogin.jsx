@@ -40,7 +40,7 @@ const JWTLogin = () => {
          console.log(userdata.user.role)
 
         // Navigating to the dashboard upon successful login
-        navigate('/api/v1/dashboard');
+        navigate('/dashboard');
       } else {
         setError('Username or password is invalid');
       }

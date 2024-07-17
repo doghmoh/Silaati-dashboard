@@ -11,6 +11,14 @@ const PieDonutChart = ({ data }) => {
     // Clear the previous SVG and legend
     d3.select('#donut-chart').selectAll('*').remove();
 
+    d3.select('#donut-chart')
+      .append('h3')
+      .text('احصائيات الاداور داخل التطبيق')
+      .style('text-align', 'center')
+      .style('margin-bottom', '29px')
+      .style('font-size', '21px');
+
+
     const svg = d3
       .select('#donut-chart')
       .append('svg')
@@ -40,7 +48,7 @@ const PieDonutChart = ({ data }) => {
       .attr('dy', '0.35em')
       .style('text-anchor', 'middle')
       .style('font-size', '12px')  // Adjust font size as needed
-      .text((d) =>  d.data.y);
+      .text((d) => d.data.y);
 
     // Create legend below the chart
     const legend = d3

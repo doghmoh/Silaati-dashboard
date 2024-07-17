@@ -11,6 +11,15 @@ const PieDonutChart2 = ({ data }) => {
     // Clear the previous SVG and legend
     d3.select('#donut-chart2').selectAll('*').remove();
 
+    d3.select('#donut-chart2')
+      .append('h3')
+      .text('احصائيات حالة الحسابات داخل التطبيق')
+      .style('text-align', 'center')
+      .style('margin-bottom', '29px')
+      .style('font-size', '21px');
+
+
+
     const svg = d3
       .select('#donut-chart2')
       .append('svg')

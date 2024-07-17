@@ -6,7 +6,7 @@ import { handleStats } from 'apis/dashboard';
 import avatar1 from '../../assets/images/user/avatar-1.jpg';
 import avatar2 from '../../assets/images/user/avatar-2.jpg';
 import avatar3 from '../../assets/images/user/avatar-3.jpg';
-import prodimg from  '../../assets/images/icon.png';
+import prodimg from '../../assets/images/icon.png';
 import PieDonutChart2 from 'views/charts/nvd3-chart/chart/PieDonutChart2';
 import { hanldeGetAllUsers } from 'apis/users';
 import PieDonutChart from 'views/charts/nvd3-chart/chart/PieDonutChart';
@@ -73,7 +73,7 @@ const DashDefault = () => {
   const [retailersSpendStats, setRetailersSpendStats] = useState({});
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
-const navigate = useNavigate();
+  const navigate = useNavigate();
 
 
   useEffect(() => {
@@ -116,36 +116,34 @@ const navigate = useNavigate();
 
   useEffect(() => {
     setLoading(true)
-    if (userRelatedStats.locationStats) {
+    if (userRelatedStats && userRelatedStats.locationStats) {
       const { suppliersByWilaya, retailersByWilaya } = userRelatedStats.locationStats;
 
-      if (userRelatedStats && userRelatedStats.locationStats) {
-        const updatedWilayaData = wilayas.map(wilaya => {
-          const supplierData = userRelatedStats && suppliersByWilaya[wilaya.wilayacode];
-          const retailerData = userRelatedStats && retailersByWilaya[wilaya.wilayacode];
-          return {
-            ...wilaya,
-            supplier: supplierData ? supplierData.count : wilaya.supplier,
-            retailer: retailerData ? retailerData.count : wilaya.retailer
-          };
-        });
+      const updatedWilayaData = wilayas.map(wilaya => {
+        const supplierData = userRelatedStats && suppliersByWilaya[wilaya.wilayacode];
+        const retailerData = userRelatedStats && retailersByWilaya[wilaya.wilayacode];
+        return {
+          ...wilaya,
+          supplier: supplierData ? supplierData.count : wilaya.supplier,
+          retailer: retailerData ? retailerData.count : wilaya.retailer
+        };
+      });
 
-        setWilayaData(updatedWilayaData);
+      setWilayaData(updatedWilayaData);
 
-        // Sort wilayas based on sortBy and sortOrder
-        updatedWilayaData.sort((a, b) => {
-          const sortFieldA = sortBy === 'supplier' ? a.supplier : a.retailer;
-          const sortFieldB = sortBy === 'supplier' ? b.supplier : b.retailer;
+      // Sort wilayas based on sortBy and sortOrder
+      updatedWilayaData.sort((a, b) => {
+        const sortFieldA = sortBy === 'supplier' ? a.supplier : a.retailer;
+        const sortFieldB = sortBy === 'supplier' ? b.supplier : b.retailer;
 
-          if (sortOrder === 'asc') {
-            return sortFieldA - sortFieldB;
-          } else {
-            return sortFieldB - sortFieldA;
-          }
-        });
+        if (sortOrder === 'asc') {
+          return sortFieldA - sortFieldB;
+        } else {
+          return sortFieldB - sortFieldA;
+        }
+      });
 
-        setWilayaData(updatedWilayaData);
-      }
+      setWilayaData(updatedWilayaData);
       setLoading(false)
     }
   }, [userRelatedStats && userRelatedStats.locationStats, sortBy, sortOrder]); // Update when locationStats or sorting criteria changes
@@ -168,23 +166,25 @@ const navigate = useNavigate();
   if (error) return <div>Error: {error.message}</div>;
 
 
-  const { roleStats, accountStateStats } = userRelatedStats.userStats;
+  let sampleData;
+  let sampleData2;
 
+  if (userRelatedStats && userRelatedStats.userStats) {
+    const { roleStats, accountStateStats } = userRelatedStats.userStats;
+    sampleData = [
+      { key: 'Admin', y: roleStats.admin, color: '#ff8a65' },
+      { key: 'Suppliers', y: roleStats.supplier, color: '#f4c22b' },
+      { key: 'Retailers', y: roleStats.retailer, color: '#04a9f5' },
+      { key: 'Company', y: roleStats.courier, color: '#3ebfea' }
+    ];
+    sampleData2 = [
+      { key: 'Active', y: accountStateStats.active, color: '#ff8a65' },
+      { key: 'inActive', y: accountStateStats.inactive, color: '#f4c22b' },
+      { key: 'Banned', y: accountStateStats.banned, color: '#04a9f5' },
+      { key: 'New', y: accountStateStats.new, color: '#3ebfea' }
+    ];
 
-  const sampleData = [
-    { key: 'Admin', y: roleStats.admin, color: '#ff8a65' },
-    { key: 'Suppliers', y: roleStats.supplier, color: '#f4c22b' },
-    { key: 'Retailers', y: roleStats.retailer, color: '#04a9f5' },
-    { key: 'Company', y: roleStats.courier, color: '#3ebfea' }
-  ];
-  const sampleData2 = [
-    { key: 'Active', y: accountStateStats.active, color: '#ff8a65' },
-    { key: 'inActive', y: accountStateStats.inactive, color: '#f4c22b' },
-    { key: 'Banned', y: accountStateStats.banned, color: '#04a9f5' },
-    { key: 'New', y: accountStateStats.new, color: '#3ebfea' }
-  ];
-
-
+  }
 
   const tabContent = (
     <React.Fragment>

@@ -1,4 +1,4 @@
-import { hanldeAddNewAds, hanldeDeleteAds, hanldeGetAllAds } from 'apis/ads';
+import { handleCreateNewAds, handleGetAllAds, hanldeDeleteAds } from 'apis/ads';
 import React, { useEffect, useState } from 'react';
 import { Form, Button, Row, Col, Card, Table } from 'react-bootstrap';
 
@@ -15,9 +15,9 @@ const MyFormComponent = () => {
     const fetchAdsList = async () => {
         setLoading(true)
         try {
-            const { data } = await hanldeGetAllAds();
-            console.log(data)
-            setAdsList(data);
+            const response= await handleGetAllAds();
+            console.log(response.data)
+            setAdsList('.........'.response.data);
         } catch (err) {
             setError(err);
         } finally {
@@ -29,10 +29,10 @@ const MyFormComponent = () => {
     }, [])
 
     const handleSubmit = async (event) => {
-        event.preventDefault();
         let type = 'advertisement';
+        let src = imageBase64
         try {
-            const { data } = await hanldeAddNewAds(title, content, type, imageBase64);
+            const { data } = await handleCreateNewAds(title, content, type, src);
             console.log(data)
             fetchAdsList()
         } catch (err) {
@@ -61,7 +61,7 @@ const MyFormComponent = () => {
 
     const handleImageUpload = (event) => {
         const file = event.target.files[0];
-    
+
         if (file) {
             const reader = new FileReader();
             reader.onloadend = () => {
@@ -144,7 +144,7 @@ const MyFormComponent = () => {
                                         <td>{item.content}</td>
                                         <td>{item.type}</td>
                                         <td><img src={item.src} width={100} height={50} /></td>
-                                        <td><Button onClick={()=>handleDelete(item._id)}>Delete</Button></td>
+                                        <td><Button onClick={() => handleDelete(item._id)}>Delete</Button></td>
                                     </tr>
                                 ))}
                             </tbody>

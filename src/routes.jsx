@@ -7,18 +7,10 @@ import AdminLayout from './layouts/AdminLayout';
 import { BASE_URL } from './config/constant';
 import { AuthContext } from 'contexts/userContext';
 
-const PrivateRoute = ({ children, roles }) => {
+const PrivateRoute = ({ children }) => {
   const { state } = useContext(AuthContext);
-  const role = localStorage.getItem('role')
-  const token = localStorage.getItem('accessToken');
-  const isAuthenticated = state.isLoggedIn || token;
-  const hasRequiredRole = roles ? roles.includes(role) : true;
-
-  return isAuthenticated && hasRequiredRole ? (
-    children
-  ) : (
-    <Navigate to="/login" replace />
-  );
+  const token = localStorage.getItem('accessToken')
+  return state.isLoggedIn || token ? children : <Navigate to="/login" />;
 };
 
 export const renderRoutes = (routes = []) => (
@@ -47,17 +39,17 @@ export const renderRoutes = (routes = []) => (
 
 const routes = [
   {
-    exact: true,
+    exact: 'true',
     path: '/login',
     element: lazy(() => import('./views/auth/signin/SignIn1'))
   },
   {
-    exact: true,
+    exact: 'true',
     path: '/auth/signin-1',
     element: lazy(() => import('./views/auth/signin/SignIn1'))
   },
   {
-    exact: true,
+    exact: 'true',
     path: '/auth/signup-1',
     element: lazy(() => import('./views/auth/signup/SignUp1'))
   },
@@ -66,104 +58,99 @@ const routes = [
     layout: AdminLayout,
     routes: [
       {
-        exact: true,
+        exact: 'true',
         path: '/dashboard',
         element: lazy(() => import('./views/dashboard')),
-        guard: () => <PrivateRoute roles={['admin']} />,
+        guard: (props) => <PrivateRoute {...props} roles={['admin', 'user']} />
       },
       {
-        exact: true,
+        exact: 'true',
         path: '/orders',
         element: lazy(() => import('./views/orders/orders')),
-        guard: () => <PrivateRoute roles={['admin', 'agent']} />,
+        guard: (props) => <PrivateRoute {...props} roles={['admin']} />
       },
       {
-        exact: true,
+        exact: 'true',
         path: '/retailers',
         element: lazy(() => import('./views/customers/retailers')),
-        guard: () => <PrivateRoute roles={['admin', 'agent']} />,
+        guard: (props) => <PrivateRoute {...props} roles={['admin']} />
       },
       {
-        exact: true,
+        exact: 'true',
         path: '/suppliers',
         element: lazy(() => import('./views/customers/suppliers')),
-        guard: () => <PrivateRoute roles={['admin', 'agent']} />,
+        guard: (props) => <PrivateRoute {...props} roles={['admin']} />
       },
       {
-        exact: true,
+        exact: 'true',
         path: '/company',
         element: lazy(() => import('./views/customers/company')),
-        guard: () => <PrivateRoute roles={['admin', 'agent']} />,
+        guard: (props) => <PrivateRoute {...props} roles={['admin']} />
       },
       {
-        exact: true,
+        exact: 'true',
         path: '/products',
         element: lazy(() => import('./views/products/products')),
-        guard: () => <PrivateRoute roles={['admin', 'agent']} />,
+        guard: (props) => <PrivateRoute {...props} roles={['admin']} />
       },
       {
-        exact: true,
+        exact: 'true',
         path: '/ads',
         element: lazy(() => import('./views/ads/ads')),
-        guard: () => <PrivateRoute roles={['admin', 'agent']} />,
+        guard: (props) => <PrivateRoute {...props} roles={['admin']} />
       },
       {
-        exact: true,
+        exact: 'true',
         path: '/userdetails',
         element: lazy(() => import('./views/profile/profile')),
-        guard: () => <PrivateRoute roles={['admin', 'agent']} />,
+        guard: (props) => <PrivateRoute {...props} roles={['user', 'admin']} />
       },
       {
-        exact: true,
+        exact: 'true',
         path: '/retailerdetails',
         element: lazy(() => import('./views/retailerProfile/profile')),
-        guard: () => <PrivateRoute roles={['admin', 'agent']} />,
+        guard: (props) => <PrivateRoute {...props} roles={['admin']} />
       },
       {
-        exact: true,
-        path: '/admin',
-        element: lazy(() => import('./views/settings/admin')),
-        guard: () => <PrivateRoute roles={['admin']} />,
-      },
-      {
-        exact: true,
-        path: '/feedback',
-        element: lazy(() => import('./views/feedback/feedback')),
-        guard: () => <PrivateRoute roles={['admin', 'agent']} />,
-      },
-      {
-        exact: true,
         path: '/businessTypes',
         element: lazy(() => import('./views/variable/businessTypes')),
-        guard: () => <PrivateRoute roles={['admin']} />,
+        guard: (props) => <PrivateRoute {...props} roles={['admin']} />
       },
       {
-        exact: true,
         path: '/categoryTypes',
         element: lazy(() => import('./views/variable/categoryTypes')),
-        guard: () => <PrivateRoute roles={['admin']} />,
+        guard: (props) => <PrivateRoute {...props} roles={['admin']} />
       },
       {
-        exact: true,
         path: '/itemTypes',
         element: lazy(() => import('./views/variable/itemTypes')),
-        guard: () => <PrivateRoute roles={['admin']} />,
+        guard: (props) => <PrivateRoute {...props} roles={['admin']} />
       },
       {
-        exact: true,
         path: '/packagingTypes',
         element: lazy(() => import('./views/variable/packagingTypes')),
-        guard: () => <PrivateRoute roles={['admin']} />,
+        guard: (props) => <PrivateRoute {...props} roles={['admin']} />
       },
       {
-        exact: true,
+        exact: 'true',
+        path: '/feedback',
+        element: lazy(() => import('./views/feedback/feedback')),
+        guard: (props) => <PrivateRoute {...props} roles={['user', 'admin']} />
+      },
+      {
+        exact: 'true',
+        path: '/admin',
+        element: lazy(() => import('./views/settings/admin')),
+        guard: (props) => <PrivateRoute {...props} roles={['admin']} />
+      },
+      {
         path: '*',
+        exact: 'true',
         element: () => <Navigate to={BASE_URL} />,
         guard: PrivateRoute
       },
     ]
   }
 ];
-
 
 export default routes;

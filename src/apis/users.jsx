@@ -12,7 +12,7 @@ export const hanldeGetAllUsers = async () => {
 };
 
 
-export const hanldeGetAdmin = async (id) => {
+export const handelGetAdmin = async (id) => {
     try {
         setAuthToken()
         const response = await api.get(`api/v1/users/all-mods`, {});
@@ -22,13 +22,12 @@ export const hanldeGetAdmin = async (id) => {
     }
 };
 
-
 export const handleCreateAgents = async (newAgent) => {
     const { firstName, lastName, phoneNumber, password } = newAgent
-    const role = 'agent'
     try {
         setAuthToken()
-        const response = await api.post(`api/v1/register`, { firstName, lastName, phoneNumber, role, password });
+
+        const response = await api.post(`/api/v1/register-agent`, { firstName, lastName, phoneNumber, password });
         return handleApiResponseData(response, 'create agents  Successfully', 'create agents  failed');
     } catch (error) {
         handleApiError(error);
@@ -132,22 +131,10 @@ export const handleDeleteFeedback = async (userId) => {
     }
 }
 
-
-export const handleGetAgentOtp = async () => {
+export const handleUpdateAgentPassword = async (otp) => {
     try {
         setAuthToken()
-        const response = await api.get(`api/v1/get-agents-otp`, {});
-        console.log(response.data)
-        return handleApiResponseData(response, 'GET agent  Successfully', 'GET agent failed');
-    } catch (error) {
-        handleApiError(error);
-    }
-}
-
-export const handleSetAgentOtp = async (otp) => {
-    try {
-        setAuthToken()
-        const response = await api.post(`/api/v1/set-agents-otp`, {otp});
+        const response = await api.post(`/api/v1/set-agents-otp`, { otp });
         console.log(response.data)
         return handleApiResponseData(response, 'set agent  Successfully', 'set agent failed');
     } catch (error) {
@@ -156,10 +143,10 @@ export const handleSetAgentOtp = async (otp) => {
 
 }
 
-export const handleVerifyAgentOtp = async (phoneNumber,otp) => {
+export const handleCreateNewAgent = async (phoneNumber, otp) => {
     try {
         setAuthToken()
-        const response = await api.post(`/api/v1/verify-agents-otp`, {phoneNumber,otp});
+        const response = await api.post(`/api/v1/verify-agents-otp`, { phoneNumber, otp });
         console.log(response.data)
         return handleApiResponseData(response, 'Verify agent  Successfully', 'Verify agent failed');
     } catch (error) {

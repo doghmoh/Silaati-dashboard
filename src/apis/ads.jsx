@@ -1,7 +1,7 @@
 
 import { api, handleApiError, handleApiResponseData, setAuthToken } from "./api";
 
-export const hanldeGetAllAds = async () => {
+export const handleGetAllAds = async () => {
     try {
         setAuthToken()
         const response = await api.get('api/v1/announcements/all-announcements', {});
@@ -12,7 +12,7 @@ export const hanldeGetAllAds = async () => {
 };
 
 
-export const hanldeAddNewAds = async (title, content, type, src) => {
+export const handleCreateNewAds = async (title, content, type, src) => {
     try {
         setAuthToken()
         const response = await api.post('api/v1/announcements/new-announcement', { title, content, type, src });
