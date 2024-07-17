@@ -3,7 +3,7 @@ import { Card, Container, Row, Col, Button, CardGroup } from 'react-bootstrap';
 import { useLocation, useNavigate } from 'react-router-dom';
 import avatar1 from '../../assets/images/user/avatar-2.jpg';
 import './profile.css';
-import { handleUpdateUserImage, handleUpdateUserStatus, hanldeGetAllOrdersByUser, hanldeGetPrdouctsBySupplier, hanldeGetUserDetails, handleDeleteUser } from 'apis/users';
+import { handleUpdateUserImage, handleUpdateUserStatus, hanldeGetAllOrdersByUser, hanldeGetPrdouctsBySupplier, hanldeGetUserDetails } from 'apis/users';
 import ProductsList from './productsTable';
 import OrdersList from './ordersTable';
 import Loader from 'components/Loader/Loader';

@@ -89,7 +89,7 @@ const OrdersList = ({
                                             <td>{order.payment.finalTotal} DA</td>
                                             <td><span className={`status ${order.status.toLowerCase()} label text-white f-12`}>{order.status}</span></td>
                                             <td>
-                                            <Button variant="primary" onClick={() => handleOpenModal(item)}>
+                                            <Button variant="primary" onClick={() => handleOpenModal(order)}>
                                                     View Details
                                                 </Button>
                                             </td>
@@ -108,7 +108,7 @@ const OrdersList = ({
                 )}
             </Card.Body>
 
-            <OrderDetailsModal visible={showModal} order={orders} closeModal={setShowModal} />
+            <OrderDetailsModal visible={showModal} order={selectedOrder} closeModal={setShowModal} />
         </Card>
     );
 };
