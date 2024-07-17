@@ -634,12 +634,12 @@ const DashDefault = () => {
         </Col>
 
         <Col xl={8}>
-          <Card>
+          <Card style={{maxHeight:470+'px',overflow:'scroll'}}>
             <Card.Header>
               <Card.Title as="h5">User By wilaya List</Card.Title>
             </Card.Header>
             <Card.Body>
-              <Table responsive>
+              <Table responsive> 
                 <thead>
                   <tr>
                     <th>Wilaya Code</th>
@@ -673,7 +673,7 @@ const DashDefault = () => {
                   </tr>
                 </thead>
                 <tbody>
-                  {wilayas.slice(0, 4).map(wilaya => (
+                  {wilayas.map(wilaya => (
                     <tr key={wilaya.wilaya_name_ascii}>
                       <th scope="row">{wilaya.wilayacode}</th>
                       <td>{wilaya.wilayaname}</td>
@@ -681,12 +681,6 @@ const DashDefault = () => {
                       <td>{wilaya.retailer}</td>
                     </tr>
                   ))}
-                  <tr>
-                    <td></td>
-                    <td></td>
-                    <td></td>
-                    <td><Link to="#">Show more</Link></td>
-                  </tr>
                 </tbody>
               </Table>
             </Card.Body>

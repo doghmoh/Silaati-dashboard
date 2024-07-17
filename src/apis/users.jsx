@@ -1,7 +1,7 @@
 
 import { api, handleApiError, handleApiResponseData, setAuthToken } from "./api";
 
-export const hanldeGetAllUsers = async () => {
+export const handelGetAllUsers = async () => {
     try {
         setAuthToken()
         const response = await api.get('api/v1/users/all-users-basic', {});
