@@ -138,10 +138,10 @@ const Orders = () => {
                                                 <p className="m-0">{item.supplierInfos.businessName.toUpperCase()}</p>
                                             </td>
                                             <td>{item.payment.finalTotal} DA</td>
-                                            <td><span className={`status ${item.status.toLowerCase()} label text-white f-12`}>{item.status}</span></td>
+                                            <td><span className={`status ${item.status.toLowerCase()} label  fw-bold rounded p-1 text-white f-12`}>{item.status}</span></td>
                                             <td>
                                                 <Button variant="primary" onClick={() => handleOpenModal(item)}>
-                                                    View Details
+                                                    Details
                                                 </Button>
                                             </td>
                                         </tr>

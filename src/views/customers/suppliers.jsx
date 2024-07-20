@@ -145,7 +145,7 @@ const Suppliers = () => {
                                                 <h6 className="mb-1">{item.firstName + ' ' + item.lastName}</h6>
                                                 <p className="m-0">{item.phoneNumber}</p>
                                             </td>
-                                            <td>{item.accountState}</td>
+                                            <td> <span className={`bg-${item.accountState === 'active' ? 'success' : 'warning'} label fw-bold rounded p-1 text-white f-12`}>{item.accountState.toUpperCase()} </span></td>
                                             <td>{new Date(item.createdAt).toLocaleString()}</td>
                                             <td><Button onClick={() => navigate('/userdetails', { state: { item } })}>Details</Button></td>
                                         </tr>

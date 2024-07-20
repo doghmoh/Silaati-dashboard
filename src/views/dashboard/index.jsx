@@ -8,7 +8,7 @@ import avatar2 from '../../assets/images/user/avatar-2.jpg';
 import avatar3 from '../../assets/images/user/avatar-3.jpg';
 import prodimg from '../../assets/images/icon.png';
 import PieDonutChart2 from 'views/charts/nvd3-chart/chart/PieDonutChart2';
-import { hanldeGetAllUsers } from 'apis/users';
+import { handelGetAllUsers } from 'apis/users';
 import PieDonutChart from 'views/charts/nvd3-chart/chart/PieDonutChart';
 import GroupedColumnChart from 'views/charts/nvd3-chart/chart/GroupedColumnChart';
 import Loader from 'components/Loader/Loader';
@@ -95,7 +95,7 @@ const DashDefault = () => {
     const fetchUserList = async () => {
       setLoading(true)
       try {
-        const { data } = await hanldeGetAllUsers();
+        const { data } = await handelGetAllUsers();
         console.log(data)
         setUserList(data);
       } catch (err) {

@@ -145,7 +145,7 @@ const Retailers = () => {
                                                 <p className="m-0">{item.phoneNumber}</p>
                                             </td>
                                             <td>{new Date(item.createdAt).toLocaleString()}</td>
-                                            <td>{item.accountState}</td>
+                                            <td> <span className={`bg-${item.accountState === 'active' ? 'success' : 'warning'} label fw-bold rounded p-1 text-white f-12`}>{item.accountState.toUpperCase()} </span></td>
                                             <td><Button onClick={() => navigate('/retailerdetails', { state: { item } })}>Details</Button></td>
                                         </tr>
                                     ))}

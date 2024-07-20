@@ -37,7 +37,6 @@ const JWTLogin = () => {
          localStorage.setItem('role', userdata.user.role);
          localStorage.setItem('accessToken', userdata.accessToken);
          localStorage.setItem('refreshToken', userdata.refreshToken);
-         console.log(userdata.user.role)
 
         // Navigating to the dashboard upon successful login
         navigate('/dashboard');
