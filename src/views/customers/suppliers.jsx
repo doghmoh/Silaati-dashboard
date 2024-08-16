@@ -23,6 +23,7 @@ const Suppliers = () => {
             if (response) {
                 setError('');
                 setUsers(response.data.filter(item => item.role === 'supplier'));
+                console.log(response.data.filter(item => item.role === 'supplier'))
             } else {
                 setError('Data not loaded correctly');
             }

@@ -160,7 +160,7 @@ const DashDefault = () => {
   };
 
 
-  if (!orderStats && !userList && !topProductsSold && !retailersSpendStats && !userRelatedStats) return <Loader />
+  if (!orderStats && !userList && topProductsSold.length === 0 && !retailersSpendStats && !userRelatedStats) return <Loader />
 
   if (loading) return <Loader />;
   if (error) return <div>Error: {error.message}</div>;
@@ -188,7 +188,7 @@ const DashDefault = () => {
 
   const tabContent = (
     <React.Fragment>
-      {topProductsSold && topProductsSold.topProducts.map((item) => (
+      {topProductsSold  && topProductsSold.topProducts.map((item) => (
         <div key={item._id} className="d-flex friendlist-box align-items-center justify-content-center m-b-20">
           <div className="m-r-10 photo-table flex-shrink-0">
             <Link to="#">
@@ -673,7 +673,7 @@ const DashDefault = () => {
                   </tr>
                 </thead>
                 <tbody>
-                  {wilayas.map(wilaya => (
+                  {wilayas && wilayas.map(wilaya => (
                     <tr key={wilaya.wilaya_name_ascii}>
                       <th scope="row">{wilaya.wilayacode}</th>
                       <td>{wilaya.wilayaname}</td>

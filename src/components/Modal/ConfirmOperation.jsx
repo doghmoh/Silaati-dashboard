@@ -9,7 +9,7 @@ const ConfirmationModal = ({ show, handleClose, handleConfirm, message, confirma
         setInputText(e.target.value);
     };
 
-    const isConfirmEnabled = inputText === confirmationText;
+    const isConfirmEnabled = inputText === 'CONFIRM';
 
     return (
         <Modal show={show} onHide={handleClose}>
@@ -19,7 +19,7 @@ const ConfirmationModal = ({ show, handleClose, handleConfirm, message, confirma
             <Modal.Body>
                 <p>{message}</p>
                 <Form.Group>
-                    <Form.Label>Please type "{confirmationText}" to confirm:</Form.Label>
+                    <Form.Label>Please type "CONFIRM" to confirm:</Form.Label>
                     <Form.Control
                         type="text"
                         value={inputText}
