@@ -149,6 +149,11 @@ const routes = [
         element: lazy(() => import('./views/error/404')),
       },
       {
+        exact: 'true',
+        path: '/login',
+        element: lazy(() => import('./views/auth/signin/SignIn1'))
+      },
+      {
         path: '*',
         exact: 'true',
         element: () => <Navigate to={BASE_URL} />,
