@@ -19,6 +19,7 @@ const NavRight = () => {
 
   useEffect(() => {
     const { firstName, lastName } = userdata.user;
+    if (!firstName && !lastName)  handleLogoutt();
     setUsername(firstName + ' ' + lastName);
   }, [userdata])
 

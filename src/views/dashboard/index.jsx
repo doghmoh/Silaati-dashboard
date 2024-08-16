@@ -119,7 +119,7 @@ const DashDefault = () => {
     if (userRelatedStats && userRelatedStats.locationStats) {
       const { suppliersByWilaya, retailersByWilaya } = userRelatedStats.locationStats;
 
-      const updatedWilayaData = wilayas.map(wilaya => {
+      const updatedWilayaData = wilayas && wilayas.map(wilaya => {
         const supplierData = userRelatedStats && suppliersByWilaya[wilaya.wilayacode];
         const retailerData = userRelatedStats && retailersByWilaya[wilaya.wilayacode];
         return {
@@ -188,7 +188,7 @@ const DashDefault = () => {
 
   const tabContent = (
     <React.Fragment>
-      {topProductsSold  && topProductsSold.topProducts.map((item) => (
+      {topProductsSold && topProductsSold.topProducts  && topProductsSold.topProducts.map((item) => (
         <div key={item._id} className="d-flex friendlist-box align-items-center justify-content-center m-b-20">
           <div className="m-r-10 photo-table flex-shrink-0">
             <Link to="#">
@@ -218,7 +218,7 @@ const DashDefault = () => {
               <div className="row d-flex align-items-center">
                 <div className="col-9">
                   <h3 className="f-w-300 d-flex align-items-center m-b-0">
-                    <i className={`feather icon-1 f-30 m-r-5`} />{orderStats.total}
+                    <i className={`feather icon-1 f-30 m-r-5`} />{orderStats && orderStats.total}
                   </h3>
                 </div>
                 <div className="col-3 text-end">
@@ -335,7 +335,7 @@ const DashDefault = () => {
                   <i className="feather icon-zap f-30 text-c-green" />
                 </div>
                 <div className="col">
-                  <h3 className="f-w-300">{userRelatedStats.userStats.total}</h3>
+                  <h3 className="f-w-300">{userRelatedStats &&  userRelatedStats.userStats && userRelatedStats.userStats.total}</h3>
                   <span className="d-block text-uppercase">Total Users</span>
                 </div>
               </div>
