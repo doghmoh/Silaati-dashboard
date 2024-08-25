@@ -1,7 +1,13 @@
 import React, { useEffect } from 'react';
 import * as d3 from 'd3';
+import { Alert } from 'react-bootstrap';
 
 const PieDonutChart2 = ({ data }) => {
+  // Check for data validity before running the useEffect
+  if (!data || data.length === 0) {
+    return <div variant="warning">لا يوجد بيانات</div>;
+  }
+
   useEffect(() => {
     const width = 500;
     const height = 300;
@@ -18,8 +24,6 @@ const PieDonutChart2 = ({ data }) => {
       .style('margin-bottom', '29px')
       .style('font-size', '21px');
 
-
-
     const svg = d3
       .select('#donut-chart2')
       .append('svg')
@@ -28,7 +32,7 @@ const PieDonutChart2 = ({ data }) => {
       .append('g')
       .attr('transform', `translate(${width / 2},${height / 2})`);
 
-    const colorScale = d3.scaleOrdinal().range(data.map(d => d.color));
+    const colorScale = d3.scaleOrdinal().range(data.map((d) => d.color));
 
     const pie = d3.pie().value((d) => d.y);
 
@@ -48,8 +52,8 @@ const PieDonutChart2 = ({ data }) => {
       .attr('transform', (d) => `translate(${arc.centroid(d)})`)
       .attr('dy', '0.35em')
       .style('text-anchor', 'middle')
-      .style('font-size', '12px')  // Adjust font size as needed
-      .text((d) =>  d.data.y);
+      .style('font-size', '12px') // Adjust font size as needed
+      .text((d) => d.data.y);
 
     // Create legend below the chart
     const legend = d3
@@ -60,7 +64,8 @@ const PieDonutChart2 = ({ data }) => {
       .style('justify-content', 'space-between')
       .style('margin', '10px');
 
-    legend.selectAll('.legend-item')
+    legend
+      .selectAll('.legend-item')
       .data(data)
       .enter()
       .append('div')
@@ -70,20 +75,21 @@ const PieDonutChart2 = ({ data }) => {
       .style('margin-bottom', '5px')
       .style('margin', '10px');
 
-    legend.selectAll('.legend-item')
+    legend
+      .selectAll('.legend-item')
       .append('span')
       .style('width', '10px')
       .style('height', '10px')
       .style('background-color', (d) => colorScale(d.color))
       .style('margin-right', '5px');
 
-    legend.selectAll('.legend-item')
+    legend
+      .selectAll('.legend-item')
       .append('span')
       .text((d) => d.key);
-
   }, [data]);
 
-  return <div id="donut-chart2" className='d-flex flex-column justify-content-center align-items-center'></div>;
+  return <div id="donut-chart2" className="d-flex flex-column justify-content-center align-items-center"></div>;
 };
 
 export default PieDonutChart2;

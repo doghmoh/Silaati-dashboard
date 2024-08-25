@@ -119,7 +119,7 @@ const DashDefault = () => {
     if (userRelatedStats && userRelatedStats.locationStats) {
       const { suppliersByWilaya, retailersByWilaya } = userRelatedStats.locationStats;
 
-      const updatedWilayaData = wilayas && wilayas.map(wilaya => {
+      const updatedWilayaData = wilayas.length > 0 && wilayas.map(wilaya => {
         const supplierData = userRelatedStats && suppliersByWilaya[wilaya.wilayacode];
         const retailerData = userRelatedStats && retailersByWilaya[wilaya.wilayacode];
         return {
@@ -160,12 +160,10 @@ const DashDefault = () => {
   };
 
 
-  if (!orderStats && !userList && topProductsSold.length === 0 && !retailersSpendStats && !userRelatedStats) return <Loader />
-
   if (loading) return <Loader />;
   if (error) return <div>Error: {error.message}</div>;
-
-
+  if (!orderStats || userList.length === 0 || !topProductsSold || !retailersSpendStats || !userRelatedStats) return <div>No Data Available</div>;
+  
   let sampleData;
   let sampleData2;
 
@@ -184,7 +182,9 @@ const DashDefault = () => {
       { key: 'New', y: accountStateStats.new, color: '#3ebfea' }
     ];
 
-  }
+  } 
+
+  if (sampleData.length === 0 || sampleData2.length === 0) return <div>No Data Available</div>;
 
   const tabContent = (
     <React.Fragment>
@@ -287,7 +287,7 @@ const DashDefault = () => {
             <Card.Body className="px-0 py-2">
               <Table responsive hover className="recent-users">
                 <tbody>
-                  {userList && userList.slice(0, 5).map((item) =>
+                  {userList.length > 0 && userList.slice(0, 5).map((item) =>
                   (
                     <tr className="unread" key={item._id}>
                       <td>
@@ -673,7 +673,7 @@ const DashDefault = () => {
                   </tr>
                 </thead>
                 <tbody>
-                  {wilayas && wilayas.map(wilaya => (
+                  {wilayas.length > 0 && wilayas.map(wilaya => (
                     <tr key={wilaya.wilaya_name_ascii}>
                       <th scope="row">{wilaya.wilayacode}</th>
                       <td>{wilaya.wilayaname}</td>
@@ -690,7 +690,7 @@ const DashDefault = () => {
           <Card className="card-event">
             <Card.Body>
               <div className=''>
-                {retailersSpendStats.graphData.length > 0 && <GroupedColumnChart data={retailersSpendStats.graphData} />}
+                {retailersSpendStats.graphData?.length > 0 && <GroupedColumnChart data={retailersSpendStats.graphData} />}
               </div>
             </Card.Body>
           </Card>
