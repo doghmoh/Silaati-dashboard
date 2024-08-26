@@ -161,7 +161,7 @@ const routes = [
       {
         path: '*',
         exact: 'true',
-        element: () => <Navigate to='Dashboard'/>,
+        element: () => <Navigate to='dashboard'/>,
         guard: (props) => <PrivateRoute {...props} roles={['admin','agent']} />
       }
     ]
